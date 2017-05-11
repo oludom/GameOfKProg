@@ -5,11 +5,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+
+    @FXML
+    private AnchorPane MDIAnchor;
 
     @FXML
     private MenuItem help;
@@ -24,4 +28,7 @@ public class Controller implements Initializable {
         help.setOnAction(event -> System.exit(0));
     }
 
+    public AnchorPane getMDIAnchor() {
+        return MDIAnchor;
+    }
 }
