@@ -23,17 +23,29 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         hostServices = getHostServices();
         //Creat main Pane Layout
-        AnchorPane mainPane = new AnchorPane();
-        mainPane.setPrefSize(800, 600);
+        AnchorPane root = new AnchorPane();
+        root.setPrefSize(800, 600);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/MainUI/Main.fxml"));
+        Node node = fxmlLoader.load();
+        root.getChildren().add(node);
+
+        // controller class containing UI elements
+        Controller controller = (Controller) fxmlLoader.getController();
+        AnchorPane MDIAnchor = controller.getMDIAnchor(); // MDI frame
+
         //Creat MDI Canvas Container
         MDICanvas mdiCanvas = new MDICanvas(MDICanvas.Theme.DEFAULT);
-        //Fit it to the main Pane
-        AnchorPane.setBottomAnchor(mdiCanvas, 0d);
-        AnchorPane.setLeftAnchor(mdiCanvas, 0d);
-        AnchorPane.setTopAnchor(mdiCanvas, 25d);//Button place
-        AnchorPane.setRightAnchor(mdiCanvas, 0d);
-        //Put the container Into the main pane
-        mainPane.getChildren().add(mdiCanvas);
+        //Fit it to the mdi Pane
+        MDIAnchor.setBottomAnchor(mdiCanvas, 0d);
+        MDIAnchor.setLeftAnchor(mdiCanvas, 0d);
+        MDIAnchor.setTopAnchor(mdiCanvas, 25d);//Button place
+        MDIAnchor.setRightAnchor(mdiCanvas, 0d);
+        //Put the container Into the mdi pane
+        MDIAnchor.getChildren().add(mdiCanvas);
+
+
+        // TODO DELETE AS EXAMPLE
         //Create a 'New MDI Window' Button
         Button btnDefaultMdi = new Button("New Window");
         //set the button action
@@ -41,7 +53,7 @@ public class Main extends Application {
         btnDefaultMdi.setOnAction(event -> {
             Node content = null;
             try {
-                content = FXMLLoader.load(getClass().getResource("/MainUI/Main.fxml"));
+                content = FXMLLoader.load(getClass().getResource("/gol/gameoflife.fxml"));
             } catch (Exception e) {
             }
             count++;
@@ -55,12 +67,10 @@ public class Main extends Application {
             mdiCanvas.addMDIWindow(mdiWindow);
         });
         //Put it into the main pane
-        mainPane.getChildren().add(btnDefaultMdi);
+        MDIAnchor.getChildren().add(btnDefaultMdi);
 
-        primaryStage.setScene(new Scene(mainPane));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
-
-
 
     }
 
