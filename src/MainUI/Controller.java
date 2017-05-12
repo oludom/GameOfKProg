@@ -21,11 +21,34 @@ public class Controller implements Initializable {
     private Button testbutton;
     @FXML
     private MenuBar menuBar;
+    @FXML
+    private MenuItem mvcexample;
+    @FXML
+    private MenuItem drehsafe;
+    @FXML
+    private MenuItem sokoban;
+    @FXML
+    private MenuItem siebenspaltenprimzahlen;
+    @FXML
+    private MenuItem regenbogen;
+    @FXML
+    private MenuItem connect6;
+    @FXML
+    private MenuItem gameoflife;
 
     // TODO DELETE as example
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         help.setOnAction(event -> System.exit(0));
+        mvcexample.setOnAction(event ->  Main.addContent(GameTypT.MVCexample));
+        drehsafe.setOnAction(event ->  Main.addContent(GameTypT.DrehSafe));
+        sokoban.setOnAction(event ->  Main.addContent(GameTypT.Sokoban));
+        siebenspaltenprimzahlen.setOnAction(event ->  Main.addContent(GameTypT.SiebenSpaltenPrimzahlen));
+        regenbogen.setOnAction(event ->  Main.addContent(GameTypT.Regenbogen));
+        connect6.setOnAction(event ->  Main.addContent(GameTypT.Connect6));
+        gameoflife.setOnAction(event ->  Main.addContent(GameTypT.GameOfLife));
+
+
     }
 
     public AnchorPane getMDIAnchor() {

@@ -14,15 +14,15 @@
       <menus>
         <Menu mnemonicParsing="false" text="Games">
           <items>
-            <MenuItem mnemonicParsing="false" text="Sokoban" />
-            <MenuItem mnemonicParsing="false" text="GameOfLife" />
-            <MenuItem mnemonicParsing="false" text="Connect6" />
+            <MenuItem fx:id="sokoban" mnemonicParsing="false" text="Sokoban" />
+            <MenuItem fx:id="gameoflife" mnemonicParsing="false" text="GameOfLife" />
+            <MenuItem fx:id="connect6" mnemonicParsing="false" text="Connect6" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="MVCexample" />
-            <MenuItem mnemonicParsing="false" text="Regenbogen" />
-            <MenuItem mnemonicParsing="false" text="DrehSafe" />
+            <MenuItem fx:id="mvcexample" mnemonicParsing="false" text="MVCexample" />
+            <MenuItem fx:id="regenbogen" mnemonicParsing="false" text="Regenbogen" />
+            <MenuItem fx:id="drehsafe" mnemonicParsing="false" text="DrehSafe" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="SiebenSpaltenPrimzahlen" />
+            <MenuItem fx:id="siebenspaltenprimzahlen" mnemonicParsing="false" text="SiebenSpaltenPrimzahlen" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
