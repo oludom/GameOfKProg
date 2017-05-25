@@ -4,12 +4,8 @@ import sokoban.Sokoban;
 import sokoban.Vector;
 import sokoban.model.levelobjects.*;
 
-import java.awt.*;
-import java.beans.EventHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import static javafx.scene.input.KeyCode.*;
 
 /**
  * @author Micha Heiß
@@ -20,10 +16,13 @@ public class Level {
     private Vector[] endpositions;
     private Player player;
     private Sokoban parent;
+    private String title;
+    private ArrayList<State> moves = new ArrayList<>();
 
-    public Level(ArrayList<String> leveldata, Sokoban parent){
+    public Level(ArrayList<String> leveldata, Sokoban parent, String title){
 
         this.parent = parent;
+        this.title = title;
 
         sokoban.Vector dim = countLevelSize(leveldata);
         int x = dim.getX();
@@ -66,9 +65,6 @@ public class Level {
                 levelObjects[i][j] = lo;
             }
         }
-
-
-
     }
 
 
@@ -150,11 +146,16 @@ public class Level {
         // move to position is empty (Space.class)
         if(levelObjects[pY+y][pX+x].getClass().equals(Space.class)){
             switchObjects(pX,pY, pX+x,pY+y);
+            player.setPosition(new Vector(pX+x,pY+y));
         }else if(levelObjects[pY+y][pX+x].getClass().equals(Box.class)){
             if(levelObjects[pY+y*2][pX+x*2].getClass().equals(Space.class)){
                 // box can be moved
+                // save last position for undo
+                System.out.println("moves.add()");
+                moves.add(new State(cloneLevel()));
                 switchObjects(pX+x,pY+y,pX+2*x, pY+2*y);  // move box
                 switchObjects(pX,pY, pX+x,pY+y);                // move player
+                player.setPosition(new Vector(pX+x,pY+y));
                 if(levelDone()){
                     // start next Level if possible
                     parent.startNextLevel();
@@ -185,4 +186,29 @@ public class Level {
 
     }
 
+    private LevelObject[][] cloneLevel(){
+        LevelObject[][] clone = new LevelObject[levelObjects.length][levelObjects[0].length];
+
+        for(int i = 0; i<levelObjects.length;i++){
+            for(int j = 0; j<levelObjects[0].length;j++){
+                clone[i][j] = createLevelObject(levelObjects[i][j].getChar());
+            }
+        }
+        return clone;
+
+    }
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void undo(){
+        System.out.println("undo" + moves.size());
+        if(moves.size()>0) {
+            System.out.println(Arrays.toString(levelObjects[2]));
+            levelObjects = moves.remove(moves.size() - 1).getLevelObjects();
+            System.out.println(Arrays.toString(levelObjects[2]));
+        }
+    }
 }

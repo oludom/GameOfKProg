@@ -21,8 +21,8 @@ public class Space implements LevelObject {
     }
 
     @Override
-    public String getChar() {
-        return " ";
+    public char getChar() {
+        return ' ';
     }
 
     @Override

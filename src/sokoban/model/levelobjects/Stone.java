@@ -20,8 +20,8 @@ public class Stone implements LevelObject {
     }
 
     @Override
-    public String getChar() {
-        return "#";
+    public char getChar() {
+        return '#';
     }
 
     @Override

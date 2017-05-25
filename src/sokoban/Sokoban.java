@@ -79,6 +79,8 @@ public class Sokoban extends AnchorPane{
             height = mdiWindow.getHeight();
             canvas.setWidth(width);
             canvas.setHeight(height);
+            // set title to level name
+            mdiWindow.setMdiTitle(currentLevel.getTitle());
         }else {
             width = canvas.getWidth();
             height = canvas.getHeight();
@@ -166,8 +168,7 @@ public class Sokoban extends AnchorPane{
         for(String element : fileAsString){
             if(element.matches("(Level )([0-9]+)")){ // level nummer
                 if(levelindex != -1){
-                    levels.add(new Level(levellines, this));
-//                    currentLevel = new Level(levellines);
+                    levels.add(new Level(levellines, this, leveltitle));
 
                 }
                 levellines = new ArrayList<>();
@@ -181,8 +182,7 @@ public class Sokoban extends AnchorPane{
                 levellines.add(element);
             }
         }
-        levels.add(new Level(levellines, this));
-//        currentLevel = new Level(levellines);
+        levels.add(new Level(levellines, this, leveltitle));
 
     }
 
@@ -228,7 +228,9 @@ public class Sokoban extends AnchorPane{
                 case RIGHT:
                     currentLevel.movePlayer(1,0);
                     break;
-                case SHIFT:
+                case U:
+                    currentLevel.undo();
+                    render();
                     break;
             }
             render();
@@ -241,6 +243,7 @@ public class Sokoban extends AnchorPane{
 
         if(levels.size()>current+1){
             currentLevel = levels.get(current+1);
+            if(mdiWindow != null) mdiWindow.setMdiTitle(currentLevel.getTitle());
             render();
         } // TODO winning message after last level solved
 

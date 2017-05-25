@@ -262,7 +262,7 @@ public class MDIWindow extends BorderPane {
     private void moveListener() {
         this.setOnMouseDragged((MouseEvent dragEvent) -> {
             if (!isMaximized) {
-                //Move
+                //State
                 x += dragEvent.getSceneX() - mousex;
                 y += dragEvent.getSceneY() - mousey;
                 //again set current Mouse x AND y position
@@ -270,10 +270,10 @@ public class MDIWindow extends BorderPane {
                 mousey = dragEvent.getSceneY();
                 if (resizeMode == resizeMode.NONE) {
                     //set the positon of Node after calculation
-                    if (borderPane.getWidth() < borderPane.getParent().getLayoutBounds().getWidth()) {//if the panel is not biger then the window: Move
+                    if (borderPane.getWidth() < borderPane.getParent().getLayoutBounds().getWidth()) {//if the panel is not biger then the window: State
                         borderPane.setLayoutX(x);
                     }
-                    if (borderPane.getHeight() < borderPane.getParent().getLayoutBounds().getHeight()) {//if the panel is not biger then the window: Move
+                    if (borderPane.getHeight() < borderPane.getParent().getLayoutBounds().getHeight()) {//if the panel is not biger then the window: State
                         borderPane.setLayoutY(y);
                     }
 
