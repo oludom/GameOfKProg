@@ -8,6 +8,7 @@ import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -23,7 +24,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.transform.TransformChangedEvent;
 import javafx.util.Duration;
+import sokoban.Sokoban;
 
 import java.io.InputStream;
 import java.util.logging.Level;
@@ -120,6 +123,14 @@ public class MDIWindow extends BorderPane {
         this.setTop(makeTitlePane(title));
         mdiContent = makeContentPane(content);
         this.setCenter(mdiContent);
+
+        // TODO changed by user
+        this.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if(content.getClass().equals(Sokoban.class)){
+                Sokoban s = (Sokoban) content;
+                s.bindListener();
+            }
+        });
     }
 
     public Node getContent() {
@@ -189,6 +200,8 @@ public class MDIWindow extends BorderPane {
             previousHeightToResize = getHeight();
             previousWidthToResize = getWidth();
             isMaximized = true;
+            // changed
+//            borderPane.fireEvent(new TransformChangedEvent());
             try {
                 btnMaximize.setGraphic(getImageFromAssets("restore.png"));
             } catch (Exception ex) {
@@ -424,6 +437,8 @@ public class MDIWindow extends BorderPane {
 
         this.setOnMouseClicked((MouseEvent t) -> {
             borderPane.toFront();
+            // TODO changed by user
+            this.requestFocus();
         });
     }
 
@@ -510,4 +525,7 @@ public class MDIWindow extends BorderPane {
         this.btnMinimize = btnMinimize;
     }
 
+    public double getPreviousWidthToResize() {
+        return previousWidthToResize;
+    }
 }
