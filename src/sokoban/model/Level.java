@@ -44,7 +44,7 @@ public class Level {
         for(int i = 0; i<y;i++) {
             for (int j = 0; j < x; j++) {
                 if(levelarray[i].toCharArray().length>j){
-                    if(levelarray[i].charAt(j) == '.'){
+                    if(levelarray[i].charAt(j) == '.' || levelarray[i].charAt(j) == '*' || levelarray[i].charAt(j) == '+'){
                         endP.add(new Vector(j,i));
                     }
                     levelObjects[i][j] = createLevelObject(levelarray[i].charAt(j));
@@ -60,12 +60,10 @@ public class Level {
 
         // fill outside level with stone
         int left = 0;
-        int right = 0;
         LevelObject lo = createLevelObject('#');
         for(int i = 0; i<levelObjects.length;i++){
 
             left = getLeftHash(levelObjects[i]);
-//            right = getRightHash(levelObjects[i]);
 
             for(int j = 0; j<left;j++){
                 levelObjects[i][j] = lo;
@@ -99,10 +97,12 @@ public class Level {
     private LevelObject createLevelObject(char l){
         switch (l){
             case '@':
+            case '+':
                 if(this.player == null)
                     this.player = new Player();
                 return this.player;
             case '$':
+            case '*':
                 return new Box();
             case '#':
                 return new Stone();
