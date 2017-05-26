@@ -93,7 +93,8 @@ public class Level {
     private LevelObject createLevelObject(char l){
         switch (l){
             case '@':
-                this.player = new Player();
+                if(this.player == null)
+                    this.player = new Player();
                 return this.player;
             case '$':
                 return new Box();
@@ -191,11 +192,28 @@ public class Level {
 
         for(int i = 0; i<levelObjects.length;i++){
             for(int j = 0; j<levelObjects[0].length;j++){
-                clone[i][j] = createLevelObject(levelObjects[i][j].getChar());
+                if(levelObjects[i][j].getChar() == '@'){
+                    clone[i][j] = new Player();
+                    clone[i][j].setPosition(new Vector(j,i));
+                }else{
+                    clone[i][j] = createLevelObject(levelObjects[i][j].getChar());
+                }
             }
         }
         return clone;
 
+    }
+
+    private Player searchPlayer(){
+        Player player = new Player();
+        for(int i = 0; i<levelObjects.length;i++){
+            for(int j = 0; j<levelObjects[0].length;j++){
+                if(levelObjects[i][j].getChar() == '@'){
+                    player = (Player) levelObjects[i][j];
+                }
+            }
+        }
+        return player;
     }
 
 
@@ -204,11 +222,9 @@ public class Level {
     }
 
     public void undo(){
-        System.out.println("undo" + moves.size());
         if(moves.size()>0) {
-            System.out.println(Arrays.toString(levelObjects[2]));
             levelObjects = moves.remove(moves.size() - 1).getLevelObjects();
-            System.out.println(Arrays.toString(levelObjects[2]));
+            this.player = searchPlayer();
         }
     }
 }
