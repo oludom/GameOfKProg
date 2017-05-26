@@ -74,6 +74,7 @@ public class Main extends Application {
                     content = new MVCpolynom();
                     titel = "MVCexample";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case Sokoban:
@@ -89,6 +90,7 @@ public class Main extends Application {
                     content = FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
                     titel = "Connect 6";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case DrehSafe:
@@ -96,6 +98,7 @@ public class Main extends Application {
                     content = new DrehSafe();
                     titel = "DrehSafe";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case GameOfLife:
@@ -103,6 +106,7 @@ public class Main extends Application {
                     content = FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
                     titel = "Game Of Life";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case Regenbogen:
@@ -110,6 +114,7 @@ public class Main extends Application {
                     content = new Regenbogen();//FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
                     titel = "Regenbogen";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case SiebenSpaltenPrimzahlen:
@@ -117,6 +122,7 @@ public class Main extends Application {
                     content = new SiebenSpaltenPrimezahl(); //FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
                     titel = "Sieben Spalten Primzahl";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
         }

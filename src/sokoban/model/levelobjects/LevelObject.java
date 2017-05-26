@@ -8,7 +8,7 @@ import sokoban.Vector;
  */
 public interface LevelObject {
 
-    public char getChar();
-    public Image toImage();
-    public void setPosition(Vector v);
+    char getChar();
+    Image toImage();
+    void setPosition(Vector v);
 }

@@ -1,6 +1,5 @@
 package sokoban;
 
-import MainUI.Main;
 import br.com.supremeforever.mdi.MDIWindow;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -63,9 +62,11 @@ public class Sokoban extends AnchorPane{
 
     public void setMdiWindow(MDIWindow mdiWindow) {
         this.mdiWindow = mdiWindow;
-
     }
 
+    /**
+     * update canvas, redraw all images contained in current level
+     */
     private void render(){
 
         double width, height, levelSize;
@@ -107,8 +108,11 @@ public class Sokoban extends AnchorPane{
         // Black background
 //        c.setFill(Color.BLACK);
 //        c.fillRect(0,0,width,height);
+
+        // calculate minimum size of image to fill canvas completely
         double minsize = width>height ? width : height;
         c.drawImage(new Stone().toImage(), 0,0,minsize,minsize);
+
 
         // render currentLevel
 
@@ -117,16 +121,19 @@ public class Sokoban extends AnchorPane{
                 Image tmp;
                 if(lo[i][j] != null){
 
+                    // check whether sand in background needs to represent end position
                     if(!lo[i][j].getClass().equals(Stone.class)) {
                         if (currentLevel.isEndposition(new Vector(j, i))) {
                             tmp = Space.toImage(true);
                         } else {
                             tmp = Space.toImage(false);
                         }
-                        c.drawImage(tmp, levelXPos + j * boxSize, levelYPos + i * boxSize, boxSize, boxSize); // draw sand as background
+                        // draw sand as background
+                        c.drawImage(tmp, levelXPos + j * boxSize, levelYPos + i * boxSize, boxSize, boxSize);
                     }
 
-                    if(lo[i][j].getClass().equals(Player.class)) lo[i][j].setPosition(new Vector(j,i)); // set Player position for key movement
+                    // set Player position for key movement
+                    if(lo[i][j].getClass().equals(Player.class)) lo[i][j].setPosition(new Vector(j,i));
 
                     // if not Space, draw object
                     if(!lo[i][j].getClass().equals(Space.class)){
@@ -138,6 +145,9 @@ public class Sokoban extends AnchorPane{
         }
     }
 
+    /**
+     * reads level data from file, parses it and fills level array with levels from file
+     */
     public void readLevel(){
 
         // TODO debug
@@ -161,7 +171,6 @@ public class Sokoban extends AnchorPane{
 
         // create each level
         ArrayList<String> levellines = new ArrayList<>();
-        int levelcount = 0;
         int levelindex = -1;
         String leveltitle = "";
 
@@ -169,12 +178,10 @@ public class Sokoban extends AnchorPane{
             if(element.matches("(Level )([0-9]+)")){ // level nummer
                 if(levelindex != -1){
                     levels.add(new Level(levellines, this, leveltitle));
-
                 }
                 levellines = new ArrayList<>();
                 String[] parts = element.split(" ");
                 levelindex = Integer.valueOf(parts[1]);
-                levelcount++;
             }else if (element.matches("(')(.)+(')")) { // titel umringt von '
                 String[] parts = element.split("'");
                 leveltitle = parts[1];
@@ -187,6 +194,9 @@ public class Sokoban extends AnchorPane{
     }
 
 
+    /**
+     * scalable canvas element to fit resizeable window
+     */
     public static class CanvasPane extends Pane {
 
         private final javafx.scene.canvas.Canvas canvas;
@@ -213,6 +223,9 @@ public class Sokoban extends AnchorPane{
         }
     }
 
+    /**
+     * binds key controls to active internal frame
+     */
     public void bindListener(){
         primaryStage.getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
@@ -237,6 +250,9 @@ public class Sokoban extends AnchorPane{
         });
     }
 
+    /**
+     * starts the next level contained in levels ArrayList if possible
+     */
     public void startNextLevel(){
 
         int current = levels.indexOf(currentLevel);
