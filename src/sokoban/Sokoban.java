@@ -1,9 +1,12 @@
 package sokoban;
 
 import br.com.supremeforever.mdi.MDIWindow;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -16,6 +19,7 @@ import sokoban.model.levelobjects.Stone;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * @author Micha Heiß
@@ -25,6 +29,7 @@ public class Sokoban extends AnchorPane{
     private Canvas canvas;
     private GraphicsContext c;
     private MDIWindow mdiWindow;
+    private ArrayList<CanvasButton> canvasButtons = new ArrayList<>();
 
     private ArrayList<Level> levels = new ArrayList<>();
     private Level currentLevel;
@@ -57,7 +62,48 @@ public class Sokoban extends AnchorPane{
 
 //        render();
 
+        canvasButtons.add(new CanvasButton(50,50,50,32,"sokoban/images/Level.png", "sokoban/images/Level_hover.png", "levelselect"));
 
+        canvas.setOnMouseClicked(event -> {
+            // compute canvasButtons
+            for(CanvasButton cb : canvasButtons){
+                if(cb.isInside(event.getX(), event.getY())){ // TODO if not drag detected
+                    switch (cb.getName()){
+                        case "levelselect":
+
+                            ArrayList<String> choices = new ArrayList<>();
+                            for(Level level : levels){
+                                choices.add(level.getTitle());
+                            }
+                            String res = getChoice("Starte Level", null, "Wählen Sie ein Level: ", choices, 0, 0);
+                            if(!res.equals("")){
+                                currentLevel = getLevelByTitle(res);
+                            }
+                            break;
+                    }
+                    break;
+                }
+            }
+        });
+        canvas.setOnMouseMoved(event -> {
+            render();
+
+            for (CanvasButton cb : canvasButtons){
+                if(cb.isInside(event.getX(), event.getY()))
+                    c.drawImage(cb.getHover(), cb.getX(), cb.getY(), cb.getWidth(), cb.getHeight());
+            }
+        });
+
+    }
+
+    private Level getLevelByTitle(String title) {
+        Level out = levels.get(0);
+        for(Level level : levels){
+            if(level.getTitle().equals(title)){
+                out = level;
+            }
+        }
+        return out;
     }
 
     public void setMdiWindow(MDIWindow mdiWindow) {
@@ -143,6 +189,13 @@ public class Sokoban extends AnchorPane{
                 }
             }
         }
+
+
+        // add canvas Buttons
+        for (CanvasButton cb : canvasButtons){
+            c.drawImage(cb.getImage(), cb.getX(), cb.getY(), cb.getWidth(), cb.getHeight());
+        }
+
     }
 
     /**
@@ -263,6 +316,32 @@ public class Sokoban extends AnchorPane{
             render();
         } // TODO winning message after last level solved
 
+    }
+
+    /**
+     * easy to use method for choice dialogs
+     * @param title title of dialog
+     * @param header header text
+     * @param content information for user
+     * @param choices ArrayList containing choices to chose from
+     * @param xPosition may contain x position information
+     * @param yPosition may contain x position information
+     * @return returns empty string or selected item from Array
+     */
+    private String getChoice(String title, String header, String content, ArrayList<String> choices, double xPosition, double yPosition){
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(choices.get(0), choices);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+        if((xPosition != 0) && (yPosition != 0)){
+            dialog.setX(xPosition);
+            dialog.setY(yPosition);
+        }
+
+        Optional<String> result = dialog.showAndWait();
+        if(result.isPresent())return result.get();
+        return "";
     }
 
 }
