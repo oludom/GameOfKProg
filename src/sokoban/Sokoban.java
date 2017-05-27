@@ -62,7 +62,12 @@ public class Sokoban extends AnchorPane{
 
 //        render();
 
-        canvasButtons.add(new CanvasButton(50,50,50,32,"sokoban/images/Level.png", "sokoban/images/Level_hover.png", "levelselect"));
+        canvasButtons.add(
+                new CanvasButton(
+                        50,50,50,32,
+                        "sokoban/images/Level.png",
+                        "sokoban/images/Level_hover.png",
+                        "levelselect"));
 
         canvas.setOnMouseClicked(event -> {
             // compute canvasButtons
@@ -113,7 +118,7 @@ public class Sokoban extends AnchorPane{
     /**
      * update canvas, redraw all images contained in current level
      */
-    private void render(){
+    public void render(){
 
         double width, height, levelSize;
         LevelObject[][] lo = currentLevel.getLevelObjects();
@@ -231,6 +236,7 @@ public class Sokoban extends AnchorPane{
             if(element.matches("(Level )([0-9]+)")){ // level nummer
                 if(levelindex != -1){
                     levels.add(new Level(levellines, this, leveltitle));
+                    leveltitle = "";
                 }
                 levellines = new ArrayList<>();
                 String[] parts = element.split(" ");

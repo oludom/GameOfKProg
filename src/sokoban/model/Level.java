@@ -1,5 +1,6 @@
 package sokoban.model;
 
+import javafx.scene.control.Alert;
 import sokoban.Sokoban;
 import sokoban.Vector;
 import sokoban.model.levelobjects.*;
@@ -177,6 +178,12 @@ public class Level {
                 switchObjects(pX,pY, pX+x,pY+y);                // move player
                 player.setPosition(new Vector(pX+x,pY+y));
                 if(levelDone()){
+                    parent.render();
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Level erfolgreich!");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Sie haben das Level Erfolgreich abgeschlossen!");
+                    alert.showAndWait();
                     // start next Level if possible
                     parent.startNextLevel();
                 }
