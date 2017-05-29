@@ -3,10 +3,12 @@ package sokoban.model.levelobjects;
 import javafx.scene.image.Image;
 import sokoban.Vector;
 
+import java.io.Serializable;
+
 /**
  * @author Micha Heiß
  */
-public class Player implements LevelObject {
+public class Player implements LevelObject, Serializable {
 
     private static Image image = new Image("sokoban/images/trump.png");
     private Vector position;

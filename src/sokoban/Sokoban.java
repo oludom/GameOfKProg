@@ -1,23 +1,17 @@
 package sokoban;
 
 import br.com.supremeforever.mdi.MDIWindow;
-import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import sokoban.model.Level;
-import sokoban.model.levelobjects.LevelObject;
-import sokoban.model.levelobjects.Player;
-import sokoban.model.levelobjects.Space;
-import sokoban.model.levelobjects.Stone;
+import sokoban.model.levelobjects.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -30,6 +24,9 @@ public class Sokoban extends AnchorPane{
     private GraphicsContext c;
     private MDIWindow mdiWindow;
     private ArrayList<CanvasButton> canvasButtons = new ArrayList<>();
+
+    private double boxSize;
+    private double levelXPos, levelYPos;
 
     private ArrayList<Level> levels = new ArrayList<>();
     private Level currentLevel;
@@ -64,15 +61,24 @@ public class Sokoban extends AnchorPane{
 
         canvasButtons.add(
                 new CanvasButton(
-                        50,50,50,32,
+                        20,20,50,32,
                         "sokoban/images/Level.png",
                         "sokoban/images/Level_hover.png",
                         "levelselect"));
+        canvasButtons.add(
+                new CanvasButton(
+                        90, 10, 50, 50,
+                        "sokoban/images/open.png",
+                        "sokoban/images/open_hover.png",
+                        "open"
+                )
+        );
 
         canvas.setOnMouseClicked(event -> {
+            double x = event.getX(), y = event.getY();
             // compute canvasButtons
             for(CanvasButton cb : canvasButtons){
-                if(cb.isInside(event.getX(), event.getY())){ // TODO if not drag detected
+                if(cb.isInside(x,y)){ // TODO if not drag detected
                     switch (cb.getName()){
                         case "levelselect":
 
@@ -85,9 +91,41 @@ public class Sokoban extends AnchorPane{
                                 currentLevel = getLevelByTitle(res);
                             }
                             break;
+                        case "open":
+                            // TODO make it open
+                            //saveSerialLevel("testfile.txt");
+                            currentLevel = readSerialLevel("testfile.txt");
+                            currentLevel.setParent(this);
+                            break;
                     }
                     break;
                 }
+            }
+
+            // mouse control for player
+            Player player = currentLevel.searchPlayer();
+            double playerX = player.getPosition().getX()*boxSize + levelXPos;
+            double playerY = player.getPosition().getY()*boxSize + levelYPos;
+
+            if(x > (x-boxSize) && x < (x+2*boxSize) && y > (y-boxSize) && y < (y + 2*boxSize)){
+                // TODO MOVE PLAYER
+                // top
+                if(squareContains(x,y, playerX,playerY-boxSize,boxSize, boxSize)){
+                    currentLevel.movePlayer(0,-1);
+                }
+                // right
+                else if(squareContains(x,y, playerX+boxSize,playerY,boxSize, boxSize)){
+                    currentLevel.movePlayer(1,0);
+                }
+                // bottom
+                else if(squareContains(x,y, playerX,playerY+boxSize,boxSize, boxSize)){
+                    currentLevel.movePlayer(0, 1);
+                }
+                // left
+                else if(squareContains(x,y, playerX-boxSize,playerY,boxSize, boxSize)){
+                    currentLevel.movePlayer(-1,0);
+                }
+                render();
             }
         });
         canvas.setOnMouseMoved(event -> {
@@ -150,11 +188,11 @@ public class Sokoban extends AnchorPane{
         }
 
         divider++;
-        double boxSize = levelSize/divider;
+        boxSize = levelSize/divider;
 
         //                  zentrieren          unterschied im verhältnis zwischen Breite und Höhe, daher nochmal zentrieren
-        double levelXPos = (width-levelSize)/2+(levelSize-lWidth*boxSize)/2;
-        double levelYPos = (height-levelSize)/2+(levelSize-lHeight*boxSize)/4;
+        levelXPos = (width-levelSize)/2+(levelSize-lWidth*boxSize)/2;
+        levelYPos = (height-levelSize)/2+(levelSize-lHeight*boxSize)/4;
 
         // Black background
 //        c.setFill(Color.BLACK);
@@ -188,7 +226,12 @@ public class Sokoban extends AnchorPane{
 
                     // if not Space, draw object
                     if(!lo[i][j].getClass().equals(Space.class)){
-                        tmp =  lo[i][j].toImage(); // new Image("sokoban/images/wood.png");//
+                        // make box look dark if it is on red crossed sand
+                        if(currentLevel.isEndposition(new Vector(j, i)) && lo[i][j].getClass().equals(Box.class)){
+                            tmp =  Box.toImage(true);
+                        }else {
+                            tmp =  lo[i][j].toImage(); // new Image("sokoban/images/wood.png");//
+                        }
                         if(!lo[i][j].getClass().equals(Stone.class)) c.drawImage(tmp,levelXPos+j*boxSize, levelYPos+i*boxSize, boxSize, boxSize );
                     }
                 }
@@ -211,7 +254,7 @@ public class Sokoban extends AnchorPane{
         // TODO debug
         // TODO maybe create it first
         String dir = "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\GOK_Sokoban";
-        String filename = "minicosmos.txt";
+        String filename = "nabokosmos.txt";
         ArrayList<String> fileAsString = new ArrayList<>();
 
         try {
@@ -350,4 +393,45 @@ public class Sokoban extends AnchorPane{
         return "";
     }
 
+    /**
+     * checks if coordinates are inside a given rectangle
+     * @param x x coordinate to check
+     * @param y y coordinate to check
+     * @param sx x coordinate of rectangle
+     * @param sy y coordinate of rectangle
+     * @param w width of rectangle
+     * @param h height of rectangle
+     * @return true if x,y inside rectangle (sx,sy,w,h)
+     */
+    private boolean squareContains(double x, double y, double sx, double sy, double w, double h){
+        return x>sx && x<(sx+w) && y>sy && y<(sy+h);
+    }
+
+
+    private void saveSerialLevel(String filename){
+
+        try {
+            FileOutputStream fs = new FileOutputStream(filename);
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            os.writeObject(currentLevel);
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Level readSerialLevel(String filename){
+
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filename));
+            return (Level) inputStream.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
 }

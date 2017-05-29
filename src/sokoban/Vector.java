@@ -1,9 +1,11 @@
 package sokoban;
 
+import java.io.Serializable;
+
 /**
  * @author Micha Heiß
  */
-public class Vector {
+public class Vector implements Serializable{
 
     private int x,y;
 

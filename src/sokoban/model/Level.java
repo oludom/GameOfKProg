@@ -5,18 +5,20 @@ import sokoban.Sokoban;
 import sokoban.Vector;
 import sokoban.model.levelobjects.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author Micha Heiß
  */
-public class Level {
+public class Level implements Serializable {
+
+    private static final long serialVersionUID = 9187435L;
 
     private LevelObject[][] levelObjects;
     private Vector[] endpositions;
     private Player player;
-    private Sokoban parent;
+    private transient Sokoban parent;
     private String title;
     private ArrayList<State> moves = new ArrayList<>();
 
@@ -249,12 +251,13 @@ public class Level {
      * search for player object in levelobject array
      * @return player object reference
      */
-    private Player searchPlayer(){
+    public Player searchPlayer(){
         Player player = new Player();
         for(int i = 0; i<levelObjects.length;i++){
             for(int j = 0; j<levelObjects[0].length;j++){
                 if(levelObjects[i][j].getChar() == '@'){
                     player = (Player) levelObjects[i][j];
+                    player.setPosition(new Vector(j,i));
                 }
             }
         }
@@ -274,5 +277,9 @@ public class Level {
             levelObjects = moves.remove(moves.size() - 1).getLevelObjects();
             this.player = searchPlayer();
         }
+    }
+
+    public void setParent(Sokoban parent) {
+        this.parent = parent;
     }
 }

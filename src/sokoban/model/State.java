@@ -2,10 +2,12 @@ package sokoban.model;
 
 import sokoban.model.levelobjects.LevelObject;
 
+import java.io.Serializable;
+
 /**
  * @author Micha Heiß
  */
-public class State {
+public class State implements Serializable{
 
     private LevelObject[][] levelObjects;
 
