@@ -4,6 +4,8 @@
  */
 package br.com.supremeforever.mdi;
 
+import MainUI.GameTypT;
+import gol.GameOfLife;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -67,6 +69,10 @@ public class MDIWindow extends BorderPane {
     double lastX;
     private String windowsTitle;
 
+    //TODO Custom ADD
+    private GameTypT gameTyp = GameTypT.None;
+    private Object gameObject;
+
     /**
      * @param logoImage
      * @param title
@@ -104,6 +110,17 @@ public class MDIWindow extends BorderPane {
             centerMdiWindow();
             maximizeRestoreMdiWindow();
         }
+    }
+
+    /**
+     * @param logoImage
+     * @param title
+     * @param content
+     * @throws Exception
+     */
+    public MDIWindow(String mdiWindowID, ImageView logoImage, String title, Node content, GameTypT gameTyp) {
+        this.gameTyp = gameTyp;
+        init(mdiWindowID, logoImage, title, content);
     }
 
     private void init(String mdiWindowID, ImageView logoImage, String title, Node content) {
@@ -418,6 +435,20 @@ public class MDIWindow extends BorderPane {
             }
             isClosed.setValue(true);
         });
+        //TODO Custom Content
+
+        try{
+            if(GameTypT.GameOfLife == gameTyp){
+                if(gameObject !=null){
+                    GameOfLife gol = (GameOfLife) gameObject;
+                    gol.close();
+                }
+            }else {
+                System.out.println("No Content "+gameTyp);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     private void bringToFrontListener() {
@@ -508,6 +539,18 @@ public class MDIWindow extends BorderPane {
 
     public void setBtnMinimize(Button btnMinimize) {
         this.btnMinimize = btnMinimize;
+    }
+
+    public void setContent(Node content){
+        System.out.println(content.getClass());
+        mdiContent = makeContentPane(content);
+        this.setCenter(mdiContent);
+    }
+
+    public void setContent(Node content, Object gameObject){
+        this.gameObject = gameObject;
+        mdiContent = makeContentPane(content);
+        this.setCenter(mdiContent);
     }
 
 }
