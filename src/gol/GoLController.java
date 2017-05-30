@@ -55,10 +55,10 @@ public class GoLController implements Initializable {
         private MenuItem copyItem;
 
         @FXML
-        private Menu fugureItem;
+        private Menu figureItem;
 
         @FXML
-        private MenuItem geliderItem;
+        private MenuItem gliderItem;
 
         @FXML
         private MenuItem bipolItem;
@@ -70,15 +70,25 @@ public class GoLController implements Initializable {
         private MenuItem seglerItem;
 
         @FXML
+        private MenuItem cannonItem;
+
+        @FXML
+        private MenuItem clearItem;
+
+        @FXML
         private AnchorPane anchorPane;
 
         @FXML
         private GridPane gridPane;
 
+
+
         @Override
         public void initialize(URL location, ResourceBundle resources) {
 
         }
+
+
 
         public AnchorPane getAnchorPane() {
                 return anchorPane;
@@ -92,47 +102,59 @@ public class GoLController implements Initializable {
             return colorMenu;
         }
 
-    public RadioMenuItem getRunItem() {
-        return runItem;
-    }
+        public RadioMenuItem getRunItem() {
+            return runItem;
+        }
 
-    public RadioMenuItem getDrawItem() {
-        return drawItem;
-    }
+        public RadioMenuItem getDrawItem() {
+            return drawItem;
+        }
 
-    public RadioMenuItem getPlaceItem() {
-        return placeItem;
-    }
+        public RadioMenuItem getPlaceItem() {
+            return placeItem;
+        }
 
-    public MenuItem getLoadItem() {
-        return loadItem;
-    }
+        public MenuItem getLoadItem() {
+            return loadItem;
+        }
 
-    public MenuItem getSaveItem() {
-        return saveItem;
-    }
+        public MenuItem getSaveItem() {
+            return saveItem;
+        }
 
-    public MenuItem getNewItem() {
-        return newItem;
-    }
+        public MenuItem getNewItem() {
+            return newItem;
+        }
 
-    public MenuItem getCopyItem() {
-        return copyItem;
-    }
+        public MenuItem getCopyItem() {
+            return copyItem;
+        }
 
-    public MenuItem getGeliderItem() {
-        return geliderItem;
-    }
+        public MenuItem getGliderItem() {
+            return gliderItem;
+        }
 
-    public MenuItem getBipolItem() {
-        return bipolItem;
-    }
+        public MenuItem getBipolItem() {
+            return bipolItem;
+        }
 
-    public MenuItem getTripolItem() {
-        return tripolItem;
-    }
+        public MenuItem getTripolItem() {
+            return tripolItem;
+        }
 
-    public MenuItem getSeglerItem() {
-        return seglerItem;
-    }
+        public MenuItem getSeglerItem() {
+            return seglerItem;
+        }
+
+        public MenuItem getCannonItem() {
+            return cannonItem;
+        }
+
+        public MenuItem getClearItem() {
+            return clearItem;
+        }
+
+        public Menu getSpeedMenu() {
+            return speedMenu;
+        }
 }

@@ -10,7 +10,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gol.GoLController">
+<VBox prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+    <!-- fx:controller="gol.GoLController" -->
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -40,10 +41,12 @@
             </Menu>
             <Menu fx:id="fugureItem" mnemonicParsing="false" text="Figuren">
               <items>
-                <MenuItem fx:id="geliderItem" mnemonicParsing="false" text="Gleiter einfügen" />
+                <MenuItem fx:id="gliderItem" mnemonicParsing="false" text="Gleiter einfügen" />
                   <MenuItem fx:id="bipolItem" mnemonicParsing="false" text="Bipol einfügen" />
                   <MenuItem fx:id="tripolItem" mnemonicParsing="false" text="Tripol einfügen" />
                   <MenuItem fx:id="seglerItem" mnemonicParsing="false" text="Segler einfügen" />
+                  <MenuItem fx:id="cannonItem" mnemonicParsing="false" text="Cannon einfügen" />
+                  <MenuItem fx:id="clearItem" mnemonicParsing="false" text="Welt leeren" />
               </items>
             </Menu>
       </menus>

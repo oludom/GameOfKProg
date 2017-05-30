@@ -14,7 +14,7 @@ import static java.lang.Thread.sleep;
  */
 public class World extends Observable implements Cloneable {
 
-    private final Cell[][] cells;
+    private Cell[][] cells;
     private int dimX;
     private int dimY;
     int threadTime = 500;
@@ -54,13 +54,13 @@ public class World extends Observable implements Cloneable {
     public Cell getCell(int x, int y){
         // Torrus
         if(x<0)
-            x = cells.length+x;
+            x = dimX+x;
         if(y<0)
-            y = cells.length +y;
-        if(x>cells.length-1)
-            x -= cells.length;
-        if(y>cells.length-1)
-            y -= cells.length;
+            y = dimY +y;
+        if(x>dimX-1)
+            x -= dimX;
+        if(y>dimY-1)
+            y -= dimY;
         return cells[x][y];
     }
 
@@ -137,6 +137,10 @@ public class World extends Observable implements Cloneable {
 
     public void addView(){
         viewCount++;
+    }
+
+    public int getViewCount() {
+        return viewCount;
     }
 
     public void removeView(){

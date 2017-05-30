@@ -4,6 +4,7 @@ import br.com.supremeforever.mdi.MDICanvas;
 import br.com.supremeforever.mdi.MDIWindow;
 import drehsafe.DrehSafe;
 import gol.GameOfLife;
+import gol.World;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
@@ -56,7 +57,7 @@ public class Main extends Application {
 
     }
 
-    public static void addContent(GameTypT gameTypT){
+    public static void addContent(GameTypT gameTypT, Object gameValue){
         Node content = null;
         String titel = "Titel";
         switch (gameTypT){
@@ -90,9 +91,16 @@ public class Main extends Application {
                 break;
             case GameOfLife:
                 try {
-                    content = new GameOfLife();
+                    if(gameValue != null){
+                        if(gameValue.getClass().equals(World.class))
+                            content = new GameOfLife((World) gameValue);
+                    }else{
+                        content = new GameOfLife();
+                        System.out.println("New GOL");
+                    }
                     titel = "Game Of Life";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case Regenbogen:

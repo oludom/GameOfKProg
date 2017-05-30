@@ -1,5 +1,7 @@
 package gol;
 
+import MainUI.GameTypT;
+import MainUI.Main;
 import br.com.supremeforever.mdi.MDIWindow;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -10,8 +12,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -22,7 +25,7 @@ import java.util.ArrayList;
 public class GameOfLife extends Pane {
 
     Node content;
-    static World world;
+    World world;
     GoLController golController;
     int worldHeight = 0;
     int worldWidth = 0;
@@ -30,12 +33,20 @@ public class GameOfLife extends Pane {
     private boolean enableDrawing = false;
     private String colorDead = "000000";
     private String colorAlive = "FFFFFF";
+    private MDIWindow mdiWindow;
 
     public GameOfLife(){
         this.setMinSize(500,500);
 //        new WorldDimDialog(this);
-        worldHeight = 10;
+        worldHeight = 5;
         worldWidth = 10;
+        world = new World(worldWidth, worldHeight);
+        init();
+    }
+
+    public GameOfLife(World world){
+        this.setMinSize(500,500);
+        this.world = world;
         init();
     }
 
@@ -49,7 +60,7 @@ public class GameOfLife extends Pane {
                 (int)(c.getGreen()*255), (int)(c.getBlue()*255));
 
         Platform.runLater(() -> {
-            MDIWindow mdiWindow;
+
             do{
                 mdiWindow = (MDIWindow) this.getParent().getParent();
 
@@ -57,26 +68,13 @@ public class GameOfLife extends Pane {
 
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gol/gameoflife.fxml"));
+                golController = new GoLController();
+                fxmlLoader.setController(golController);
                 content = fxmlLoader.load();
                 mdiWindow.setContent(content,this);
-                golController = fxmlLoader.getController();
-                world = new World(worldWidth, worldHeight);
+//                golController = fxmlLoader.getController();
                 world.addView();
-                GridPane contentGridPane = golController.getGridPane();
-
-                Cell[][] cells = world.getCells();
-                int i = 0,j = 0;
-                System.out.println(cells.length);
-                for(Cell[] clls : cells){
-                    j=0;
-                    for(Cell cell : clls){
-                        CellPane cellPane = new CellPane(cell, this);
-                        contentGridPane.add(cellPane,i,j);
-                        cellPaneList.add(cellPane);
-                        j++;
-                    }
-                    i++;
-                }
+                generateWorld();
 
                 Menu colorMenu = golController.getColorMenu();
                 ColorPicker pickerAlive = new ColorPicker(Color.WHITE);
@@ -100,7 +98,24 @@ public class GameOfLife extends Pane {
                 golController.getDrawItem().setOnAction(event -> drawingItem());
                 golController.getPlaceItem().setOnAction(event -> setzenItem());
                 golController.getRunItem().setOnAction(event -> laufenItem());
+                golController.getBipolItem().setOnAction(event -> addBipol());
+                golController.getTripolItem().setOnAction(event -> addTripol());
+                golController.getGliderItem().setOnAction(event -> addGleiter());
+                golController.getSeglerItem().setOnAction(event -> addSegler());
+                golController.getCannonItem().setOnAction(event -> addCannon());
+                golController.getClearItem().setOnAction(event -> world.clear());
 
+                Slider speedSlider = new Slider(1d,1000,500);
+                speedSlider.valueProperty().addListener(l -> {
+                    world.setThreadTime((int) speedSlider.getValue());
+                });
+                golController.getSpeedMenu().getItems().add(new MenuItem(null,speedSlider));
+
+                golController.getLoadItem().setOnAction(event -> loadWorld());
+                golController.getSaveItem().setOnAction(event -> saveWorld());
+
+                golController.getCopyItem().setOnAction(event -> copyWordItem());
+                golController.getNewItem().setOnAction(event -> newWindowItem());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -109,6 +124,26 @@ public class GameOfLife extends Pane {
 
 
         });
+    }
+
+    private void generateWorld(){
+
+        GridPane contentGridPane = golController.getGridPane();
+        contentGridPane.getChildren().clear();
+        cellPaneList.clear();
+
+        Cell[][] cells = world.getCells();
+        int i = 0,j = 0;
+        for(Cell[] clls : cells){
+            j=0;
+            for(Cell cell : clls){
+                CellPane cellPane = new CellPane(cell, this);
+                contentGridPane.add(cellPane,j,i);
+                cellPaneList.add(cellPane);
+                j++;
+            }
+            i++;
+        }
     }
 
     private void refillCellPane(Color color, boolean cellTyp){
@@ -156,6 +191,8 @@ public class GameOfLife extends Pane {
 
     public void laufenItem(){
         world.startThread();
+        System.out.println("World:"+world);
+        System.out.println("Controler"+golController);
         enableDrawing = false;
     }
 
@@ -173,33 +210,251 @@ public class GameOfLife extends Pane {
         world.stopThread();
     }
 
-    //    public static class ContentGridPane extends GridPane {
-////        private final GridPane gridPane;
-//
-//        public ContentGridPane(double width, double height){
-//
-////            this.setPrefSize(width, height);
-////            this.setStyle("-fx-background-color: green");
-//
-//
-//        }
-//
-////        public GridPane getGridPane(){return gridPane;}
-//
-//        @Override
-//        protected void layoutChildren() {
-//            final double x = snappedLeftInset();
-//            final double y = snappedTopInset();
-//            final double w = snapSize(getWidth()) - x - snappedRightInset();
-//            final double h = snapSize(getHeight()) - y - snappedBottomInset();
-//
-//            this.setLayoutX(x);
-//            this.setLayoutY(y);
-//            this.setPrefWidth(w);
-//            this.setPrefHeight(h);
-//
-////            System.out.println("Grid W:"+w);
-////            System.out.println("Grid H"+h);
-//        }
-//    }
+    private void addGleiter(){
+        world.clear();
+        world.getCell(5,5).setAlive(true);
+        world.getCell(6,6).setAlive(true);
+        world.getCell(6,7).setAlive(true);
+        world.getCell(7,5).setAlive(true);
+        world.getCell(7,6).setAlive(true);
+    }
+
+    private void addBipol(){
+        world.clear();
+        world.getCell(5,5).setAlive(true);
+        world.getCell(6,5).setAlive(true);
+        world.getCell(6,6).setAlive(true);
+        world.getCell(5,6).setAlive(true);
+        world.getCell(7,7).setAlive(true);
+        world.getCell(8,7).setAlive(true);
+        world.getCell(7,8).setAlive(true);
+        world.getCell(8,8).setAlive(true);
+    }
+
+    private void addTripol(){
+        world.clear();
+        world.getCell(5,5).setAlive(true);
+        world.getCell(6,5).setAlive(true);
+        world.getCell(5,6).setAlive(true);
+        world.getCell(7,6).setAlive(true);
+        world.getCell(7,8).setAlive(true);
+        world.getCell(9,8).setAlive(true);
+        world.getCell(8,9).setAlive(true);
+        world.getCell(9,9).setAlive(true);
+    }
+
+    private void addSegler(){
+        world.clear();
+        int x = 5;
+        int y = 5;
+        world.getCell(x,y+1).setAlive(true);
+        world.getCell(x,y+2).setAlive(true);
+        world.getCell(x,y+3).setAlive(true);
+        world.getCell(x,y+4).setAlive(true);
+        world.getCell(x,y+5).setAlive(true);
+        world.getCell(x,y+6).setAlive(true);
+        world.getCell(x+1,y).setAlive(true);
+        world.getCell(x+1,y+6).setAlive(true);
+        world.getCell(x+2,y+6).setAlive(true);
+        world.getCell(x+3,y).setAlive(true);
+        world.getCell(x+3,y+5).setAlive(true);
+        world.getCell(x+4,y+2).setAlive(true);
+        world.getCell(x+4,y+3).setAlive(true);
+    }
+
+    private void addCannon(){
+        world.clear();
+        world.getCell(2,24).setAlive(true);
+        world.getCell(2,25).setAlive(true);
+        world.getCell(3,24).setAlive(true);
+        world.getCell(3,26).setAlive(true);
+        world.getCell(4,12).setAlive(true);
+        world.getCell(4,25).setAlive(true);
+        world.getCell(4,26).setAlive(true);
+        world.getCell(4,27).setAlive(true);
+        world.getCell(5,9).setAlive(true);
+        world.getCell(5,10).setAlive(true);
+        world.getCell(5,11).setAlive(true);
+        world.getCell(5,12).setAlive(true);
+        world.getCell(5,16).setAlive(true);
+        world.getCell(5,17).setAlive(true);
+        world.getCell(5,26).setAlive(true);
+        world.getCell(5,27).setAlive(true);
+        world.getCell(5,28).setAlive(true);
+        world.getCell(5,35).setAlive(true);
+        world.getCell(5,36).setAlive(true);
+        world.getCell(6,8).setAlive(true);
+        world.getCell(6,9).setAlive(true);
+        world.getCell(6,10).setAlive(true);
+        world.getCell(6,11).setAlive(true);
+        world.getCell(6,15).setAlive(true);
+        world.getCell(6,16).setAlive(true);
+        world.getCell(6,25).setAlive(true);
+        world.getCell(6,26).setAlive(true);
+        world.getCell(6,27).setAlive(true);
+        world.getCell(6,35).setAlive(true);
+        world.getCell(6,36).setAlive(true);
+        world.getCell(7,1).setAlive(true);
+        world.getCell(7,2).setAlive(true);
+        world.getCell(7,8).setAlive(true);
+        world.getCell(7,11).setAlive(true);
+        world.getCell(7,15).setAlive(true);
+        world.getCell(7,16).setAlive(true);
+        world.getCell(7,18).setAlive(true);
+        world.getCell(7,20).setAlive(true);
+        world.getCell(7,21).setAlive(true);
+        world.getCell(7,24).setAlive(true);
+        world.getCell(7,26).setAlive(true);
+        world.getCell(8,1).setAlive(true);
+        world.getCell(8,2).setAlive(true);
+        world.getCell(8,8).setAlive(true);
+        world.getCell(8,9).setAlive(true);
+        world.getCell(8,10).setAlive(true);
+        world.getCell(8,11).setAlive(true);
+        world.getCell(8,16).setAlive(true);
+        world.getCell(8,18).setAlive(true);
+        world.getCell(8,20).setAlive(true);
+        world.getCell(8,21).setAlive(true);
+        world.getCell(8,24).setAlive(true);
+        world.getCell(8,25).setAlive(true);
+        world.getCell(9,9).setAlive(true);
+        world.getCell(9,10).setAlive(true);
+        world.getCell(9,11).setAlive(true);
+        world.getCell(9,12).setAlive(true);
+        world.getCell(9,16).setAlive(true);
+        world.getCell(9,18).setAlive(true);
+        world.getCell(9,19).setAlive(true);
+        world.getCell(10,12).setAlive(true);
+    }
+
+    private void saveWorld(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Welt als Datei speichern");
+        fileChooser.setInitialFileName("GoL-Exported.txt");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Dateien (*.txt)", "*.txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Alle Dateien (*.*)", "*"));
+        //TODO Wenn möglich anpassen das ownerWindow das Programm ist
+        File file = fileChooser.showSaveDialog(null);
+        if(file != null){
+            saveFile(file.getPath());
+        }
+    }
+
+    private void saveFile(String filename){
+        try {
+            PrintWriter writer = new PrintWriter(filename, "UTF-8");
+            writer.println("GameOfLife - WorldData");
+            writer.println("--START--");
+            writer.println("worlddimX:"+world.getDimX());
+            writer.println("worlddimY:"+world.getDimY());
+            writer.println("---------");
+            Cell[][] cells = world.getCells();
+            for(Cell[] c1: cells){
+                String text = "";
+                for(Cell c : c1){
+                    text += c;
+                }
+                writer.println(text);
+            }
+            writer.println("--END--");
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadWorld(){
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Welt aus Datei laden");
+        //TODO Wenn möglich anpassen das ownerWindow das Programm ist
+        File file = fileChooser.showOpenDialog(null);
+        if(file != null){
+            readFile(file.getPath());
+        }
+
+    }
+
+    private void readFile(String filename){
+        ArrayList<String> fileAsString = new ArrayList<>();
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(filename));
+            String line = bufferedReader.readLine();
+            while (line != null){
+
+                fileAsString.add(line);
+                line = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int worlddimX = 0;
+        int worlddimY = 0;
+        ArrayList<String> worldData  = new ArrayList<>();
+        for(String element : fileAsString){
+            if(element.matches("(worlddimX:)([0-9]+)")){
+                String[] parts = element.split(":");
+                worlddimX = Integer.valueOf(parts[1]);
+            }else if (element.matches("(worlddimY:)([0-9]+)")) {
+                String[] parts = element.split(":");
+                worlddimY = Integer.valueOf(parts[1]);
+            }else if(element.matches("(worlddim:)([0-9]+)")){
+                String[] parts = element.split(":");
+                worlddimY = Integer.valueOf(parts[1]);
+                worlddimX = Integer.valueOf(parts[1]);
+            }else if(element.matches("[0,1]+")){
+                worldData.add(element);
+            }
+
+        }
+        final int worldDimX = worlddimX;
+        final int worldDimY = worlddimY;
+        Platform.runLater(() -> {
+                if(world.getDimX() != worldDimX || world.getDimY() != worldDimY){
+                    world.removeView();
+                    //TODO REMOVE
+//                    System.out.println(world.getViewCount());
+                    world = new World(worldDimX, worldDimY);
+                    world.addView();
+//                    System.out.println(world.getViewCount());
+                }
+                world.clear();
+
+                try {
+                    for(int i = 0;i < worldDimX; i++){
+                        String s = worldData.get(i);
+                        char[] chars = s.toCharArray();
+                        for(int j = 0; j < worldDimY; j++){
+                            String sdata = String.valueOf(chars[j]);
+                            if (sdata.contains("1")) {
+                                world.getCell(i, j).setAlive(true);
+                            }
+                            if (sdata.contains("0")) {
+                                world.getCell(i, j).setAlive(false);
+                            }
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            generateWorld();
+
+        });
+
+
+    }
+
+    private void copyWordItem(){
+        Main.addContent(GameTypT.GameOfLife,world.clone());
+    }
+
+    private void newWindowItem(){
+        Main.addContent(GameTypT.GameOfLife,world);
+    }
+
+
+
+
 }

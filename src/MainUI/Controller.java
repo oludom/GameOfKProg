@@ -40,13 +40,13 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         help.setOnAction(event -> System.exit(0));
-        mvcexample.setOnAction(event ->  Main.addContent(GameTypT.MVCexample));
-        drehsafe.setOnAction(event ->  Main.addContent(GameTypT.DrehSafe));
-        sokoban.setOnAction(event ->  Main.addContent(GameTypT.Sokoban));
-        siebenspaltenprimzahlen.setOnAction(event ->  Main.addContent(GameTypT.SiebenSpaltenPrimzahlen));
-        regenbogen.setOnAction(event ->  Main.addContent(GameTypT.Regenbogen));
-        connect6.setOnAction(event ->  Main.addContent(GameTypT.Connect6));
-        gameoflife.setOnAction(event ->  Main.addContent(GameTypT.GameOfLife));
+        mvcexample.setOnAction(event ->  Main.addContent(GameTypT.MVCexample,null));
+        drehsafe.setOnAction(event ->  Main.addContent(GameTypT.DrehSafe,null));
+        sokoban.setOnAction(event ->  Main.addContent(GameTypT.Sokoban,null));
+        siebenspaltenprimzahlen.setOnAction(event ->  Main.addContent(GameTypT.SiebenSpaltenPrimzahlen,null));
+        regenbogen.setOnAction(event ->  Main.addContent(GameTypT.Regenbogen,null));
+        connect6.setOnAction(event ->  Main.addContent(GameTypT.Connect6,null));
+        gameoflife.setOnAction(event ->  Main.addContent(GameTypT.GameOfLife,null));
 
 
     }
