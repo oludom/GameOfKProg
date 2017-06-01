@@ -7,13 +7,18 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sokoban.model.Level;
 import sokoban.model.levelobjects.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * @author Micha Heiß
@@ -59,18 +64,50 @@ public class Sokoban extends AnchorPane{
 
 //        render();
 
+        // create controll buttons
+        // positions: y: 10 x: 20+70
+        // size: 50*50
+        // level select
         canvasButtons.add(
                 new CanvasButton(
                         20,20,50,32,
-                        "sokoban/images/Level.png",
-                        "sokoban/images/Level_hover.png",
+                        "sokoban/images/buttons/Level.png",
+                        "sokoban/images/buttons/Level_hover.png",
                         "levelselect"));
+        // open level file
         canvasButtons.add(
                 new CanvasButton(
                         90, 10, 50, 50,
-                        "sokoban/images/open.png",
-                        "sokoban/images/open_hover.png",
+                        "sokoban/images/buttons/open.png",
+                        "sokoban/images/buttons/open_hover.png",
                         "open"
+                )
+        );
+        // load saved game state
+        canvasButtons.add(
+                new CanvasButton(
+                        160,10,50,50,
+                        "sokoban/images/buttons/upload.png",
+                        "sokoban/images/buttons/upload_hover.png",
+                        "loadstate"
+                )
+        );
+        // save game state
+        canvasButtons.add(
+                new CanvasButton(
+                        230,10,50,50,
+                        "sokoban/images/buttons/download.png",
+                        "sokoban/images/buttons/download_hover.png",
+                        "savestate"
+                )
+        );
+        // undo
+        canvasButtons.add(
+                new CanvasButton(
+                        300, 10,50,50,
+                        "sokoban/images/buttons/undo.png",
+                        "sokoban/images/buttons/undo_hover.png",
+                        "undo"
                 )
         );
 
@@ -92,10 +129,22 @@ public class Sokoban extends AnchorPane{
                             }
                             break;
                         case "open":
-                            // TODO make it open
+                            showLevelFileDialog();
+                            // TODO open file dialog to select level file
                             //saveSerialLevel("testfile.txt");
-                            currentLevel = readSerialLevel("testfile.txt");
-                            currentLevel.setParent(this);
+//                            currentLevel = readSerialLevel("testfile.txt");
+//                            currentLevel.setParent(this);
+                            break;
+                        case "undo":
+                            currentLevel.undo();
+                            break;
+                        case "loadstate":
+                            // TODO load saved game state from list of all states
+                            System.out.println("loadstate");
+                            break;
+                        case "savestate":
+                            // TODO select title for state to be saved as (no file dialog!)
+                            System.out.println("savestate");
                             break;
                     }
                     break;
@@ -249,16 +298,30 @@ public class Sokoban extends AnchorPane{
     /**
      * reads level data from file, parses it and fills level array with levels from file
      */
-    public void readLevel(){
+    public void readLevel(String file){
 
-        // TODO debug
-        // TODO maybe create it first
-        String dir = "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\GOK_Sokoban";
-        String filename = "nabokosmos.txt";
+        String stddir = getDataDirectory();
+        String selectedFile = file.split(	"\\\\")[file.split("\\\\").length-1];
+        ArrayList<String> fileAsString = fileToArrayList(file); // selected file
+
+        // kopiere ausgewählte datei nach appdata
+        // lese datei
+
+        copyLevel(fileAsString, stddir + "\\" + selectedFile);
+        addLevel(fileAsString, selectedFile);
+
+
+    }
+
+    /**
+     * generates ArrayList out of a file
+     * @param file
+     * @return
+     */
+    private ArrayList<String> fileToArrayList(String file){
         ArrayList<String> fileAsString = new ArrayList<>();
-
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(dir+"\\"+filename));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             String line = bufferedReader.readLine();
             while (line != null){
 
@@ -269,16 +332,65 @@ public class Sokoban extends AnchorPane{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return fileAsString;
+    }
 
+    /**
+     * reads all level in appdata directory
+     */
+    public void readLevel(){
+
+        String stddir = getDataDirectory();
+
+        File folder = new File(stddir);
+        File[] listOfFiles = folder.listFiles();
+
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                addLevel(fileToArrayList(file.getPath()), file.getName());
+            }
+        }
+
+    }
+
+
+    /**
+     * creates file out of level Strings
+     * @param fileAsString
+     * @param filePath
+     */
+    private void copyLevel(ArrayList<String> fileAsString, String filePath){
+
+        try {
+            PrintWriter writer = new PrintWriter(filePath, "UTF-8");
+
+            for(String element : fileAsString){
+                writer.println(element);
+            }
+
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
+    private void addLevel(ArrayList<String> fileAsString, String filename){
         // create each level
         ArrayList<String> levellines = new ArrayList<>();
         int levelindex = -1;
+        int levelcount = 0;
         String leveltitle = "";
 
         for(String element : fileAsString){
             if(element.matches("(Level )([0-9]+)")){ // level nummer
                 if(levelindex != -1){
-                    levels.add(new Level(levellines, this, leveltitle));
+                    if(leveltitle.equals("")){
+                        leveltitle = filename.substring(0, filename.length()-5).toUpperCase() + " " + levelindex;
+                    }
+                    levels.add(new Level(levellines, this, leveltitle, levelcount++));
                     leveltitle = "";
                 }
                 levellines = new ArrayList<>();
@@ -291,8 +403,10 @@ public class Sokoban extends AnchorPane{
                 levellines.add(element);
             }
         }
-        levels.add(new Level(levellines, this, leveltitle));
-
+        if(leveltitle.equals("")){
+            leveltitle = filename.substring(0, filename.length()-5).toUpperCase() + " " + levelindex;
+        }
+        levels.add(new Level(levellines, this, leveltitle, levelcount++));
     }
 
 
@@ -357,7 +471,9 @@ public class Sokoban extends AnchorPane{
      */
     public void startNextLevel(){
 
-        int current = levels.indexOf(currentLevel);
+        //int current = levels.indexOf(currentLevel);
+        // changed because of serialization
+        int current = currentLevel.getLevelNumber();
 
         if(levels.size()>current+1){
             currentLevel = levels.get(current+1);
@@ -434,4 +550,43 @@ public class Sokoban extends AnchorPane{
         return null;
 
     }
+
+    private void showLevelFileDialog(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Lade Level Datei");
+//        fileChooser.setInitialFileName("GoL-Exported.txt");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Dateien (*.txt)", "*.txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Alle Dateien (*.*)", "*"));
+        //TODO Wenn möglich anpassen das ownerWindow das Programm ist
+        File file = fileChooser.showOpenDialog(null);
+        if(file != null){
+            readLevel(file.getPath());
+        }
+    }
+
+    private String getDataDirectory(){
+
+        String dir = "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\GOK_Sokoban";
+        File theDir = new File(dir);
+
+// if the directory does not exist, create it
+        if (!theDir.exists()) {
+            System.out.println("creating directory: " + theDir.getName());
+            boolean result = false;
+
+            try{
+                result = theDir.mkdir();
+
+            }
+            catch(SecurityException se){
+                se.printStackTrace();
+            }
+            if(!result) {
+                System.out.println("DIR NOT created!");
+                return null;
+            }
+        }
+        return dir;
+    }
+
 }
