@@ -7,18 +7,15 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sokoban.model.Level;
 import sokoban.model.levelobjects.*;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * @author Micha Heiß
@@ -36,6 +33,7 @@ public class Sokoban extends AnchorPane{
     private ArrayList<Level> levels = new ArrayList<>();
     private Level currentLevel;
     private Stage primaryStage;
+    private CustomDialog customDialog;
 
     public Sokoban(Stage primaryStage){
         this.primaryStage = primaryStage;
@@ -60,7 +58,7 @@ public class Sokoban extends AnchorPane{
 
         // TODO remove?
         // start with first Level
-        currentLevel = levels.get(0);
+//        currentLevel = levels.get(0);
 
 //        render();
 
@@ -129,7 +127,8 @@ public class Sokoban extends AnchorPane{
                             }
                             break;
                         case "open":
-                            showLevelFileDialog();
+                            readLevel();
+                            //showLevelFileDialog();
                             // TODO open file dialog to select level file
                             //saveSerialLevel("testfile.txt");
 //                            currentLevel = readSerialLevel("testfile.txt");
@@ -151,6 +150,7 @@ public class Sokoban extends AnchorPane{
                 }
             }
 
+            if(currentLevel == null) return;
             // mouse control for player
             Player player = currentLevel.searchPlayer();
             double playerX = player.getPosition().getX()*boxSize + levelXPos;
@@ -179,6 +179,15 @@ public class Sokoban extends AnchorPane{
         });
         canvas.setOnMouseMoved(event -> {
             render();
+            if(currentLevel == null) {
+
+                CanvasButton cb = canvasButtons.get(1);
+
+                if(cb.isInside(event.getX(), event.getY()))
+                    c.drawImage(cb.getHover(), cb.getX(), cb.getY(), cb.getWidth(), cb.getHeight());
+
+                return;
+            }
 
             for (CanvasButton cb : canvasButtons){
                 if(cb.isInside(event.getX(), event.getY()))
@@ -206,6 +215,17 @@ public class Sokoban extends AnchorPane{
      * update canvas, redraw all images contained in current level
      */
     public void render(){
+
+        if(currentLevel == null) {
+
+            // Black background
+            c.setFill(Color.BLACK);
+            c.fillRect(0,0,canvas.getWidth(),canvas.getHeight());
+
+            CanvasButton cb = canvasButtons.get(1);
+            c.drawImage(cb.getImage(), cb.getX(), cb.getY(), cb.getWidth(), cb.getHeight());
+            return;
+        }
 
         double width, height, levelSize;
         LevelObject[][] lo = currentLevel.getLevelObjects();
@@ -298,17 +318,21 @@ public class Sokoban extends AnchorPane{
     /**
      * reads level data from file, parses it and fills level array with levels from file
      */
-    public void readLevel(String file){
+    public void readLevel(String file, boolean fromFileDialog){
 
         String stddir = getDataDirectory();
-        String selectedFile = file.split(	"\\\\")[file.split("\\\\").length-1];
-        ArrayList<String> fileAsString = fileToArrayList(file); // selected file
 
-        // kopiere ausgewählte datei nach appdata
-        // lese datei
 
-        copyLevel(fileAsString, stddir + "\\" + selectedFile);
-        addLevel(fileAsString, selectedFile);
+        if(fromFileDialog){
+            ArrayList<String> fileAsString = fileToArrayList(file); // selected file
+            String selectedFile = file.split(	"\\\\")[file.split("\\\\").length-1];
+            copyLevel(fileAsString, stddir + "\\" + selectedFile);
+            addLevel(fileAsString, selectedFile);
+        }else{
+            ArrayList<String> fileAsString = fileToArrayList(stddir + "\\" + file); // selected file
+            addLevel(fileAsString, file);
+        }
+
 
 
     }
@@ -344,12 +368,22 @@ public class Sokoban extends AnchorPane{
 
         File folder = new File(stddir);
         File[] listOfFiles = folder.listFiles();
+        ArrayList<String> filenames = new ArrayList<>();
+        for(File e : listOfFiles) filenames.add(e.getName());
+        if(filenames.size()<1) filenames.add(CustomDialog.NOFILESELECTED);
 
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                addLevel(fileToArrayList(file.getPath()), file.getName());
-            }
+        customDialog = new CustomDialog(filenames, this);
+        try {
+            customDialog.start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+//        for (File file : listOfFiles) {
+//            if (file.isFile()) {
+//                addLevel(fileToArrayList(file.getPath()), file.getName());
+//            }
+//        }
 
     }
 
@@ -378,6 +412,9 @@ public class Sokoban extends AnchorPane{
     }
 
     private void addLevel(ArrayList<String> fileAsString, String filename){
+
+        levels.clear();
+
         // create each level
         ArrayList<String> levellines = new ArrayList<>();
         int levelindex = -1;
@@ -407,6 +444,9 @@ public class Sokoban extends AnchorPane{
             leveltitle = filename.substring(0, filename.length()-5).toUpperCase() + " " + levelindex;
         }
         levels.add(new Level(levellines, this, leveltitle, levelcount++));
+
+        if(levels.size()>0) currentLevel = levels.get(0);
+        render();
     }
 
 
@@ -551,16 +591,18 @@ public class Sokoban extends AnchorPane{
 
     }
 
-    private void showLevelFileDialog(){
+    public void showLevelFileDialog(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Lade Level Datei");
 //        fileChooser.setInitialFileName("GoL-Exported.txt");
+        fileChooser.setInitialDirectory(new File("C:\\Users\\" + System.getProperty("user.name") + "\\Desktop"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Dateien (*.txt)", "*.txt"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Alle Dateien (*.*)", "*"));
         //TODO Wenn möglich anpassen das ownerWindow das Programm ist
         File file = fileChooser.showOpenDialog(null);
         if(file != null){
-            readLevel(file.getPath());
+            readLevel(file.getPath(), true);
+            customDialog.addLogItem(file.getName());
         }
     }
 
