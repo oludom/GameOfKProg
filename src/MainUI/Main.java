@@ -2,6 +2,8 @@ package MainUI;
 
 import br.com.supremeforever.mdi.MDICanvas;
 import br.com.supremeforever.mdi.MDIWindow;
+import connect6.ui.BasicUIX;
+import connect6.ui.GameModusT;
 import drehsafe.DrehSafe;
 import gol.GameOfLife;
 import gol.World;
@@ -77,9 +79,16 @@ public class Main extends Application {
                 break;
             case Connect6:
                 try {
-                    content = FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                    if(gameValue != null){
+                        if(gameValue.getClass().equals(GameModusT.class))
+                            content = new BasicUIX((GameModusT) gameValue);
+                    }else{
+                        content = new BasicUIX();//FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                        System.out.println("New GOL");
+                    }
                     titel = "Connect 6";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case DrehSafe:
