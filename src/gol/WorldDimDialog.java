@@ -14,6 +14,9 @@ import java.util.Optional;
  * 16.05.2017
  *
  * @author SWirries
+ *         <p>
+ *         This code is
+ *         documentation enough
  */
 public class WorldDimDialog {
     int heightValue;

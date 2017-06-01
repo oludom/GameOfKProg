@@ -21,35 +21,48 @@ import java.util.ArrayList;
  * 16.05.2017
  *
  * @author SWirries
+ *         <p>
+ *         This code is
+ *         documentation enough
  */
 public class GameOfLife extends Pane {
 
     Node content;
-    World world;
-    GoLController golController;
+    World world; //Welt
+    GoLController golController; //JFX UI Controller
     int worldHeight = 0;
     int worldWidth = 0;
     private ArrayList<CellPane> cellPaneList = new ArrayList<>();
-    private boolean enableDrawing = false;
-    private String colorDead = "000000";
-    private String colorAlive = "FFFFFF";
-    private MDIWindow mdiWindow;
+    private boolean enableDrawing = false;//ob Malen aktiv ist
+    private String colorDead = "000000";//Anfangsfarbe tote Zellen
+    private String colorAlive = "FFFFFF";//Anfangsfarbe lebende Zellen
+    private MDIWindow mdiWindow; //Anzeigefenster
 
+    /**
+     * Erzeugt neues Fenster mit neur Welt
+     */
     public GameOfLife(){
         this.setMinSize(500,500);
-//        new WorldDimDialog(this);
-        worldHeight = 5;
-        worldWidth = 10;
+        new WorldDimDialog(this);
+//        worldHeight = 20;
+//        worldWidth = 20;
         world = new World(worldWidth, worldHeight);
         init();
     }
 
+    /**
+     * Erzeugt ein neues Fenster mit vorhandender Welt
+     * @param world
+     */
     public GameOfLife(World world){
         this.setMinSize(500,500);
         this.world = world;
         init();
     }
 
+    /**
+     * Inizialisiert die UI
+     */
     private void init(){
 
         Color c = Color.WHITE;
@@ -60,7 +73,6 @@ public class GameOfLife extends Pane {
                 (int)(c.getGreen()*255), (int)(c.getBlue()*255));
 
         Platform.runLater(() -> {
-
             do{
                 mdiWindow = (MDIWindow) this.getParent().getParent();
 
@@ -72,10 +84,12 @@ public class GameOfLife extends Pane {
                 fxmlLoader.setController(golController);
                 content = fxmlLoader.load();
                 mdiWindow.setContent(content,this);
-//                golController = fxmlLoader.getController();
                 world.addView();
                 generateWorld();
 
+                /*
+                Setzt onAction der Menu-Einträge
+                 */
                 Menu colorMenu = golController.getColorMenu();
                 ColorPicker pickerAlive = new ColorPicker(Color.WHITE);
                 ColorPicker pickerDead = new ColorPicker(Color.BLACK);
@@ -121,11 +135,13 @@ public class GameOfLife extends Pane {
                 e.printStackTrace();
             }
 
-
-
         });
     }
 
+    /**
+     * Erzeugt die Welt als UI Element
+     * verknüpft Cell mit CellPane
+     */
     private void generateWorld(){
 
         GridPane contentGridPane = golController.getGridPane();
@@ -146,6 +162,11 @@ public class GameOfLife extends Pane {
         }
     }
 
+    /**
+     * Setzt die übergebende Farbe in die Eigenschaften
+     * @param color
+     * @param cellTyp
+     */
     private void refillCellPane(Color color, boolean cellTyp){
         String colorString = String.format("#%02X%02X%02X", (int)(color.getRed()*255),
                 (int)(color.getGreen()*255), (int)(color.getBlue()*255));
@@ -173,16 +194,8 @@ public class GameOfLife extends Pane {
         return colorDead;
     }
 
-    public void setColorDead(String colorDead) {
-        this.colorDead = colorDead;
-    }
-
     public String getColorAlive() {
         return colorAlive;
-    }
-
-    public void setColorAlive(String colorAlive) {
-        this.colorAlive = colorAlive;
     }
 
     public boolean isEnableDrawing() {
@@ -191,8 +204,6 @@ public class GameOfLife extends Pane {
 
     public void laufenItem(){
         world.startThread();
-        System.out.println("World:"+world);
-        System.out.println("Controler"+golController);
         enableDrawing = false;
     }
 
@@ -206,6 +217,9 @@ public class GameOfLife extends Pane {
         enableDrawing = true;
     }
 
+    /**
+     * Wird beim Schließen des MDIWindow aufgrufen
+     */
     public void close(){
         world.stopThread();
     }
@@ -327,6 +341,9 @@ public class GameOfLife extends Pane {
         world.getCell(10,12).setAlive(true);
     }
 
+    /**
+     * Öffnet einen File Save Dialog
+     */
     private void saveWorld(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Welt als Datei speichern");
@@ -340,6 +357,10 @@ public class GameOfLife extends Pane {
         }
     }
 
+    /**
+     * Speichert die Weltdaten in der gewählten Datei
+     * @param filename
+     */
     private void saveFile(String filename){
         try {
             PrintWriter writer = new PrintWriter(filename, "UTF-8");
@@ -363,6 +384,9 @@ public class GameOfLife extends Pane {
         }
     }
 
+    /**
+     * Öffen eine File Open Dialog
+     */
     private void loadWorld(){
 
         FileChooser fileChooser = new FileChooser();
@@ -375,6 +399,10 @@ public class GameOfLife extends Pane {
 
     }
 
+    /**
+     * Liest die gewählte Datei ein und erzeugt/überschreibt die aktuelle Welt
+     * @param filename
+     */
     private void readFile(String filename){
         ArrayList<String> fileAsString = new ArrayList<>();
         try {
@@ -414,11 +442,8 @@ public class GameOfLife extends Pane {
         Platform.runLater(() -> {
                 if(world.getDimX() != worldDimX || world.getDimY() != worldDimY){
                     world.removeView();
-                    //TODO REMOVE
-//                    System.out.println(world.getViewCount());
                     world = new World(worldDimX, worldDimY);
                     world.addView();
-//                    System.out.println(world.getViewCount());
                 }
                 world.clear();
 
@@ -446,15 +471,18 @@ public class GameOfLife extends Pane {
 
     }
 
+    /**
+     * Erzeugt eine Clone-Objekt der Welt und erzeugt neues Fenster
+     */
     private void copyWordItem(){
         Main.addContent(GameTypT.GameOfLife,world.clone());
     }
 
+    /**
+     * Erzeugt ein neues Fenster mit der gelichen Welt
+     */
     private void newWindowItem(){
         Main.addContent(GameTypT.GameOfLife,world);
     }
-
-
-
 
 }

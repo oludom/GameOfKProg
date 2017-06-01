@@ -12,6 +12,10 @@ import static java.lang.Thread.sleep;
  *         This code is
  *         documentation enough
  */
+
+/**
+ * Stellt die Welt (Sammlung von Zellen) dar
+ */
 public class World extends Observable implements Cloneable {
 
     private Cell[][] cells;
@@ -22,6 +26,10 @@ public class World extends Observable implements Cloneable {
     boolean runChangeWorld = false;
     int worldNumber = 1;
 
+    /**
+     * Erzeugt eine Welt mit gleicher Höhe und Breite
+     * @param dim
+     */
     public World(int dim){
         this.cells = new Cell[dim][dim];
 
@@ -36,6 +44,11 @@ public class World extends Observable implements Cloneable {
         this.dimY = dim;
     }
 
+    /**
+     * Erzeugt eine Welt mit unterschiedlicher Höhe und Breite
+     * @param dimX
+     * @param dimY
+     */
     public World(int dimX, int dimY){
         this.cells = new Cell[dimX][dimY];
 
@@ -51,6 +64,12 @@ public class World extends Observable implements Cloneable {
     }
 
 
+    /**
+     * Gibt die Zelle an der Position zurück
+     * @param x
+     * @param y
+     * @return
+     */
     public Cell getCell(int x, int y){
         // Torrus
         if(x<0)
@@ -64,19 +83,31 @@ public class World extends Observable implements Cloneable {
         return cells[x][y];
     }
 
+    /**
+     * Gibt alle Zellen zurück
+     * @return
+     */
     public Cell[][] getCells(){
         return cells;
     }
 
+    /**
+     * setzt eine Zelle an der Position lebend oder Tod
+     * @param x
+     * @param y
+     * @param alive
+     */
     public void setAlive(int x, int y, boolean alive){
         cells[x][y].setAlive(alive);
     }
 
+    /**
+     * Lässt die Welt um eine Generation altern
+     */
     public void nextStep(){
         World clone = this.clone();
         for(int i = 0; i<dimX; i++)
             for(int j = 0;j<dimY;j++){
-//
                 if(clone.getCell(i,j).countNeighboursAlive() == 3){
                     this.getCell(i,j).setAlive(true);
                 }else if(clone.getCell(i,j).countNeighboursAlive()<2 || clone.getCell(i,j).countNeighboursAlive() > 3){
@@ -86,6 +117,10 @@ public class World extends Observable implements Cloneable {
             }
     }
 
+    /**
+     * Erzeugt eine Clone-Objekt der Welt
+     * @return
+     */
     @Override
     public World clone(){
         World clone = new World(dimX, dimY);
@@ -102,6 +137,9 @@ public class World extends Observable implements Cloneable {
     }
     public int getDimY(){ return dimY;}
 
+    /**
+     * Runnable für die Thread
+     */
     Runnable changeWorldRunnable = new Runnable() {
         @Override
         public void run() {
@@ -116,6 +154,9 @@ public class World extends Observable implements Cloneable {
         }
     };
 
+    /**
+     * Startet den Gernerationswechsel
+     */
     public void startThread(){
         if(!runChangeWorld){
             runChangeWorld = true;
@@ -135,6 +176,9 @@ public class World extends Observable implements Cloneable {
         return threadTime;
     }
 
+    /**
+     * Fügte eine "View" hinzu
+     */
     public void addView(){
         viewCount++;
     }
@@ -143,6 +187,10 @@ public class World extends Observable implements Cloneable {
         return viewCount;
     }
 
+    /**
+     * Löscht eine View
+     * wenn kleiner gelich 0 dann wird der Generationswechsel gestoppt
+     */
     public void removeView(){
         viewCount--;
         if(viewCount <= 0){
@@ -150,6 +198,9 @@ public class World extends Observable implements Cloneable {
         }
     }
 
+    /**
+     * Setzt alle Zellen auf tot
+     */
     public void clear(){
         for(Cell[] cll : cells){
             for(Cell c : cll){

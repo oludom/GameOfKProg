@@ -11,12 +11,23 @@ import java.util.Observable;
  *         This code is
  *         documentation enough
  */
+
+/**
+ * Stellt eine Zelle im Game Of Life da
+ */
 public class Cell extends Observable{
 
-    private boolean alive;
-    private World world;
-    private final int x,y;
+    private boolean alive; //gibt an ob Zelle lebt oder tod ist
+    private World world; // Verknüpfung zur Welt
+    private final int x,y; //Position in der Welt
 
+    /**
+     * Erzeugt Zelle tote oder lebnede Zelle
+     * @param world
+     * @param x
+     * @param y
+     * @param alive
+     */
     public Cell(World world, int x, int y, boolean alive){
         this.alive = alive;
         this.world = world;
@@ -24,6 +35,12 @@ public class Cell extends Observable{
         this.y = y;
     }
 
+    /**
+     * Erzeugt tote Zelle
+     * @param world
+     * @param x
+     * @param y
+     */
     public Cell(World world, int x, int y){
         this.alive = false;
         this.world = world;
@@ -36,6 +53,10 @@ public class Cell extends Observable{
         return alive;
     }
 
+    /**
+     * Zählt die lebenden Nachbarn
+     * @return
+     */
     public int countNeighboursAlive(){
         int out = 0;
         for(int i = -1; i<2;i++)
@@ -51,16 +72,10 @@ public class Cell extends Observable{
         return out;
     }
 
-//    public void step(){
-//        if(alive){
-//            if(this.countNeighboursAlive()<2 || this.countNeighboursAlive() > 3)
-//               alive = false;
-//        }else {
-//            if(this.countNeighboursAlive() == 3)
-//                alive = true;
-//        }
-//    }
-
+    /**
+     * Setzt die Zelle lebend oder Tod
+     * @param alive
+     */
     public void setAlive(boolean alive) {
 
         this.alive = alive;

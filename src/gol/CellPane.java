@@ -10,10 +10,17 @@ import java.util.Observer;
 /**
  * 16.05.2017
  *
- * @author SWirries
+ * * @author SWirries
+ *         <p>
+ *         This code is
+ *         documentation enough
+ */
+
+/**
+ * UI Elemnet der Zelle
  */
 public class CellPane extends Pane implements Observer{
-    private Cell cell;
+    private Cell cell; //Zugeordnete Zelle
     private GameOfLife gameOfLife;
 
     public CellPane(Cell cell, GameOfLife gameOfLife){
@@ -55,6 +62,9 @@ public class CellPane extends Pane implements Observer{
         });
     }
 
+    /**
+     * Füllt die CellPane mit der aktuellen Frabe aus dem Fenster
+     */
     public void refill(){
         if (!cell.isAlive()) {
             this.setStyle("-fx-background-color: " + gameOfLife.getColorDead());
