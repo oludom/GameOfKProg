@@ -18,8 +18,6 @@ public class Controller implements Initializable {
     @FXML
     private MenuItem help;
     @FXML
-    private Button testbutton;
-    @FXML
     private MenuBar menuBar;
     @FXML
     private MenuItem mvcexample;

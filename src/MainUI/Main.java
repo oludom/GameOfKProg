@@ -12,13 +12,13 @@ import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import mvcexample.MVCpolynom;
 import regenbogen.Regenbogen;
 import siebenspaltenprime.SiebenSpaltenPrimezahl;
+import sokoban.Sokoban;
 
 /**
  * Created by brisatc171.minto on 12/11/2015.
@@ -27,6 +27,9 @@ public class Main extends Application {
     static int count = 0;
     public static HostServices hostServices;
     static MDICanvas mdiCanvas;
+    private Scene scene;
+
+    private static Stage primaryStage;
 
 
     @Override
@@ -58,9 +61,13 @@ public class Main extends Application {
         primaryStage.show();
 
     }
+    public Scene getScene(){
+        return scene;
+    }
 
     public static void addContent(GameTypT gameTypT, Object gameValue){
         Node content = null;
+        MDIWindow mdiWindow;
         String titel = "Titel";
         switch (gameTypT){
             case MVCexample:
@@ -72,9 +79,10 @@ public class Main extends Application {
                 break;
             case Sokoban:
                 try {
-                    content = FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                    content = new Sokoban(primaryStage);
                     titel = "Sokoban";
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case Connect6:
@@ -130,13 +138,14 @@ public class Main extends Application {
         if(content != null){
             count++;
             //Create a Default MDI Withou Icon
-            MDIWindow mdiWindow = new MDIWindow("UniqueID" + count,
+            mdiWindow = new MDIWindow("UniqueID" + count,
                     new ImageView("/assets/WindowIcon.png"),
                     titel + " " + count,
                     content,gameTypT);
             //Set MDI Size
             //Add it to the container
             mdiCanvas.addMDIWindow(mdiWindow);
+            if(gameTypT.equals(GameTypT.Sokoban)) ((Sokoban) content).setMdiWindow(mdiWindow);
         }
 
     }
