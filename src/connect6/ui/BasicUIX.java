@@ -38,8 +38,6 @@ import java.util.Optional;
  */
 public class BasicUIX extends BorderPane {
 
-//    private Stage primaryStage;
-//    private Scene scene;
     private VBox menu_GameSelect;
     private Canvas canvas;
     private GraphicsContext c;
@@ -58,13 +56,9 @@ public class BasicUIX extends BorderPane {
 
     private Timeline timer;
 
-//    //Für Multiplayer
-//    RmiClient rmiClient;
     Timeline rederTimer;
     private double xWindowPos;
     private double yWindowPos;
-
-    private MDIWindow mdiWindow; //Anzeigefenster
 
     public BasicUIX(GameModusT gameModusT){
         init();
@@ -86,7 +80,6 @@ public class BasicUIX extends BorderPane {
     }
 
     private void init(){
-
         // window setup
         this.setMinSize(600,600);
         CanvasPane canvasPane = new CanvasPane(1000,1000);
@@ -128,10 +121,6 @@ public class BasicUIX extends BorderPane {
             }
         });
 
-//        do{
-//            mdiWindow = (MDIWindow) this.getParent().getParent();
-//
-//        }while (mdiWindow == null);
     }
 
     private void render(){
@@ -263,17 +252,7 @@ public class BasicUIX extends BorderPane {
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.isPresent()) {
                         if(result.get() == buttonTypeE){
-                            //TODO Anpassen muss MDIWindow sein
                             Main.addContent(GameTypT.Connect6, GameModusT.PLAYERVSPLAYER);
-//                            Stage newstage = new Stage();
-//                            BasicUIX b = new BasicUIX();
-//                            newstage.setScene(b.getScene());
-//                            try{
-//                                b.start(newstage);
-//                                b.startSingle();
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                            }
                         }else {
                             startSingle();
                         }
@@ -299,17 +278,7 @@ public class BasicUIX extends BorderPane {
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.isPresent()) {
                         if(result.get() == buttonTypeE){
-                            //TODO muss MDI Window sein
                             Main.addContent(GameTypT.Connect6, GameModusT.PLAYERVSBOT);
-//                            Stage newstage = new Stage();
-//                            BasicUIX b = new BasicUIX();
-//                            newstage.setScene(b.getScene());
-//                            try{
-//                                b.start(newstage);
-//                                b.startSingleBot();
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                            }
                         }else {
                             startSingleBot();
                         }
@@ -373,17 +342,7 @@ public class BasicUIX extends BorderPane {
 
                     if (result.isPresent()) {
                         if(result.get() == buttonTypeE){
-                            //TODO Muss MDIWindow sein
                             Main.addContent(GameTypT.Connect6, GameModusT.BOTVSBOT);
-//                            Stage newstage = new Stage();
-//                            BasicUIX b = new BasicUIX();
-//                            newstage.setScene(b.getScene());
-//                            try{
-//                                b.start(newstage);
-//                                b.startBot();
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                            }
                         }else {
                             startBot();
                         }
@@ -859,10 +818,6 @@ public class BasicUIX extends BorderPane {
         }
         canvasAllowUserInput = true;
     }
-
-//    public Stage getPrimaryStage(){
-//        return primaryStage;
-//    }
 
     public void setGameState(int state){
         gameState = GameState.values()[state];
