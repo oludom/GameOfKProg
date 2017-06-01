@@ -28,7 +28,6 @@ public class Main extends Application {
     public static HostServices hostServices;
     static MDICanvas mdiCanvas;
     private Scene scene;
-
     private static Stage primaryStage;
 
 
@@ -92,7 +91,6 @@ public class Main extends Application {
                             content = new BasicUIX((GameModusT) gameValue);
                     }else{
                         content = new BasicUIX();//FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
-                        System.out.println("New GOL");
                     }
                     titel = "Connect 6";
                 } catch (Exception e) {

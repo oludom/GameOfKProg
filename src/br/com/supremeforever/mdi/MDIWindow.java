@@ -5,6 +5,7 @@
 package br.com.supremeforever.mdi;
 
 import MainUI.GameTypT;
+import connect6.ui.BasicUIX;
 import gol.GameOfLife;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
@@ -443,7 +444,13 @@ public class MDIWindow extends BorderPane {
                     GameOfLife gol = (GameOfLife) gameObject;
                     gol.close();
                 }
-            }else {
+            }else if(GameTypT.Connect6 == gameTyp){
+                if(gameObject != null){
+                    BasicUIX uix = (BasicUIX) gameObject;
+                    uix.close();
+                }
+            }
+            else {
                 System.out.println("No Content "+gameTyp);
             }
         }catch (Exception ex){

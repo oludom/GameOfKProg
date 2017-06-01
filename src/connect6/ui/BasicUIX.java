@@ -145,15 +145,6 @@ public class BasicUIX extends BorderPane {
         int dimensions = board.getDimension();
         boxWidth = boardSize/dimensions;
 
-        //Image image = new Image("images/field.png");
-        //asdasdasd
-
-//        c.setFill(new RadialGradient(0, 0, boardSize/2+boardXPOS, boardSize/2+boardYPOS, boardSize, true,
-//                CycleMethod.REFLECT,
-//                new Stop(0.0, Color.rgb(221,240,255)),
-//                new Stop(1.0, Color.rgb(249,252,255))));
-//        c.fillRect(boardXPOS,boardYPOS, boardSize, boardSize);
-
         for(int i = 0; i<dimensions; i++){
             for(int j = 0; j<dimensions;j++){
                 if(j%2==0) {
@@ -170,7 +161,6 @@ public class BasicUIX extends BorderPane {
                     }
                 }
                 c.fillRect(j*boxWidth+boardXPOS, i*boxWidth+boardYPOS, boxWidth, boxWidth);
-                //c.drawImage(image, j*boxWidth+boardXPOS, i*boxWidth+boardYPOS, boxWidth, boxWidth);
             }
         }
 
@@ -843,6 +833,14 @@ public class BasicUIX extends BorderPane {
                 alert.show();
             }
         });
+    }
+
+    public void close(){
+        try {
+            timer.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
