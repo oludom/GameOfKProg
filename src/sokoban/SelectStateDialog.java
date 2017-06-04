@@ -17,13 +17,13 @@ import java.util.ArrayList;
 /**
  * @author Micha Heiß
  */
-public class CustomDialog extends Application {
+public class SelectStateDialog extends Application {
 
     ObservableList<String> titles = FXCollections.observableArrayList();
     Sokoban parent;
-    public static final String NOFILESELECTED = "Keine Datei gefunden!";
+    public static final String NOSTATESELECTED = "Keine Spielstand gefunden!";
 
-    public CustomDialog(ArrayList<String> titles, Sokoban parent){
+    public SelectStateDialog(ArrayList<String> titles, Sokoban parent){
 
         this.titles.addAll(titles);
         this.parent = parent;
@@ -32,7 +32,7 @@ public class CustomDialog extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Leveldatei auswählen");
+        primaryStage.setTitle("Spielstand auswählen");
         StackPane root  = new StackPane();
         Scene scene = new Scene(root, 600, 700);
 
@@ -43,10 +43,10 @@ public class CustomDialog extends Application {
 
         borderPane.setCenter(listView);
         borderPane.setMargin(listView, new Insets(10,10,10,10));
-        Button load = new Button("Öffnen");
-        borderPane.setBottom(load);
+        Button cancel = new Button("schließen");
+        borderPane.setBottom(cancel);
 
-        load.setOnAction(event -> parent.showLevelFileDialog());
+        cancel.setOnAction(event -> primaryStage.close());
 
         root.getChildren().add(borderPane);
 
@@ -57,9 +57,9 @@ public class CustomDialog extends Application {
             String clickedName = (String) listView.getSelectionModel().getSelectedItem();
 
             if(clickedName != null)
-                if(!clickedName.equals(NOFILESELECTED)){
+                if(!clickedName.equals(NOSTATESELECTED)){
 
-                    parent.readLevel(clickedName, false);
+                    parent.readSerialLevel(clickedName + ".ssf");
                     primaryStage.close();
                 }
 
@@ -78,7 +78,7 @@ public class CustomDialog extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if(titles.get(0).equals(NOFILESELECTED)){
+                if(titles.get(0).equals(NOSTATESELECTED)){
                     titles.remove(0);
                 }
                 titles.add(item);

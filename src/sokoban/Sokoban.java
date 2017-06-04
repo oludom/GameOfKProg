@@ -3,7 +3,9 @@ package sokoban;
 import br.com.supremeforever.mdi.MDIWindow;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -32,8 +34,12 @@ public class Sokoban extends AnchorPane{
 
     private ArrayList<Level> levels = new ArrayList<>();
     private Level currentLevel;
+    private String currentLevelFile;
     private Stage primaryStage;
     private CustomDialog customDialog;
+    private SelectStateDialog selectStateDialog;
+
+    public static final String StandardDirectory = "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\GOK_Sokoban";
 
     public Sokoban(Stage primaryStage){
         this.primaryStage = primaryStage;
@@ -55,12 +61,6 @@ public class Sokoban extends AnchorPane{
         AnchorPane.setRightAnchor(canvasPane, 0d);
 
         bindListener();
-
-        // TODO remove?
-        // start with first Level
-//        currentLevel = levels.get(0);
-
-//        render();
 
         // create controll buttons
         // positions: y: 10 x: 20+70
@@ -128,22 +128,15 @@ public class Sokoban extends AnchorPane{
                             break;
                         case "open":
                             readLevel();
-                            //showLevelFileDialog();
-                            // TODO open file dialog to select level file
-                            //saveSerialLevel("testfile.txt");
-//                            currentLevel = readSerialLevel("testfile.txt");
-//                            currentLevel.setParent(this);
                             break;
                         case "undo":
                             currentLevel.undo();
                             break;
                         case "loadstate":
-                            // TODO load saved game state from list of all states
-                            System.out.println("loadstate");
+                            readSavedState();
                             break;
                         case "savestate":
-                            // TODO select title for state to be saved as (no file dialog!)
-                            System.out.println("savestate");
+                            saveState();
                             break;
                     }
                     break;
@@ -157,7 +150,6 @@ public class Sokoban extends AnchorPane{
             double playerY = player.getPosition().getY()*boxSize + levelYPos;
 
             if(x > (x-boxSize) && x < (x+2*boxSize) && y > (y-boxSize) && y < (y + 2*boxSize)){
-                // TODO MOVE PLAYER
                 // top
                 if(squareContains(x,y, playerX,playerY-boxSize,boxSize, boxSize)){
                     currentLevel.movePlayer(0,-1);
@@ -263,10 +255,6 @@ public class Sokoban extends AnchorPane{
         levelXPos = (width-levelSize)/2+(levelSize-lWidth*boxSize)/2;
         levelYPos = (height-levelSize)/2+(levelSize-lHeight*boxSize)/4;
 
-        // Black background
-//        c.setFill(Color.BLACK);
-//        c.fillRect(0,0,width,height);
-
         // calculate minimum size of image to fill canvas completely
         double minsize = width>height ? width : height;
         c.drawImage(new Stone().toImage(), 0,0,minsize,minsize);
@@ -320,21 +308,20 @@ public class Sokoban extends AnchorPane{
      */
     public void readLevel(String file, boolean fromFileDialog){
 
-        String stddir = getDataDirectory();
-
+        String stddir = getDataDirectory(true);
 
         if(fromFileDialog){
             ArrayList<String> fileAsString = fileToArrayList(file); // selected file
             String selectedFile = file.split(	"\\\\")[file.split("\\\\").length-1];
             copyLevel(fileAsString, stddir + "\\" + selectedFile);
+            currentLevelFile = file;
             addLevel(fileAsString, selectedFile);
         }else{
             ArrayList<String> fileAsString = fileToArrayList(stddir + "\\" + file); // selected file
+            currentLevelFile = file;
             addLevel(fileAsString, file);
+
         }
-
-
-
     }
 
     /**
@@ -359,17 +346,65 @@ public class Sokoban extends AnchorPane{
         return fileAsString;
     }
 
+    public void saveState(){
+
+        // show dialog to enter name
+
+        TextInputDialog dialog = new TextInputDialog(currentLevel.getTitle());
+        dialog.setTitle("Level speichern");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Bitte Name für Levelstatus eingeben: ");
+
+        Optional<String> result;
+        do {
+            result = dialog.showAndWait();
+            if(!result.isPresent()) break;
+
+            // show again if file already exists
+        }while (new File( getDataDirectory(false) + result.get().replace(' ', '_') + ".ssf").exists());
+
+        if(result.isPresent()){
+
+            // save state serialized as .ssf (SokobanStateFile || SerializedStateFile)
+            saveSerialLevel(getDataDirectory(false) + "\\" + result.get().replace(' ', '_') + ".ssf");
+
+        }
+
+
+    }
+
+    public void readSavedState(){
+
+        String stddir = getDataDirectory(false);
+
+        File folder = new File(stddir);
+        File[] listOfFiles = folder.listFiles();
+        ArrayList<String> filenames = new ArrayList<>();
+        if(listOfFiles.length>0)
+            for(File e : listOfFiles) filenames.add(e.getName().substring(0,e.getName().length()-4));
+        if(filenames.size()<1) filenames.add(SelectStateDialog.NOSTATESELECTED);
+
+        selectStateDialog = new SelectStateDialog(filenames, this);
+        try {
+            selectStateDialog.start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * reads all level in appdata directory
      */
     public void readLevel(){
 
-        String stddir = getDataDirectory();
+        String stddir = getDataDirectory(true);
 
         File folder = new File(stddir);
         File[] listOfFiles = folder.listFiles();
         ArrayList<String> filenames = new ArrayList<>();
-        for(File e : listOfFiles) filenames.add(e.getName());
+        if(listOfFiles.length>0)
+            for(File e : listOfFiles) filenames.add(e.getName());
         if(filenames.size()<1) filenames.add(CustomDialog.NOFILESELECTED);
 
         customDialog = new CustomDialog(filenames, this);
@@ -427,7 +462,7 @@ public class Sokoban extends AnchorPane{
                     if(leveltitle.equals("")){
                         leveltitle = filename.substring(0, filename.length()-5).toUpperCase() + " " + levelindex;
                     }
-                    levels.add(new Level(levellines, this, leveltitle, levelcount++));
+                    levels.add(new Level(levellines, this, leveltitle, levelcount++, currentLevelFile));
                     leveltitle = "";
                 }
                 levellines = new ArrayList<>();
@@ -443,7 +478,7 @@ public class Sokoban extends AnchorPane{
         if(leveltitle.equals("")){
             leveltitle = filename.substring(0, filename.length()-5).toUpperCase() + " " + levelindex;
         }
-        levels.add(new Level(levellines, this, leveltitle, levelcount++));
+        levels.add(new Level(levellines, this, leveltitle, levelcount++, currentLevelFile));
 
         if(levels.size()>0) currentLevel = levels.get(0);
         render();
@@ -519,7 +554,13 @@ public class Sokoban extends AnchorPane{
             currentLevel = levels.get(current+1);
             if(mdiWindow != null) mdiWindow.setMdiTitle(currentLevel.getTitle());
             render();
-        } // TODO winning message after last level solved
+        }else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Finally...");
+            alert.setHeaderText(null);
+            alert.setContentText("Glückwunsch! Du hast alle Level erfolgreich gelöst!");
+            alert.showAndWait();
+        }
 
     }
 
@@ -576,18 +617,22 @@ public class Sokoban extends AnchorPane{
         }
     }
 
-    private Level readSerialLevel(String filename){
+    public void readSerialLevel(String filename){
 
         try {
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filename));
-            return (Level) inputStream.readObject();
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(getDataDirectory(false) + "\\" + filename));
+            Level tmp = (Level) inputStream.readObject();
+            tmp.setParent(this);
+            if(new File(getDataDirectory(true) + "\\" + tmp.getLevelFile()).exists()){
+                readLevel(currentLevel.getLevelFile(), false);
+                currentLevelFile = tmp.getLevelFile();
+            }
+            currentLevel = tmp;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-        return null;
 
     }
 
@@ -598,7 +643,6 @@ public class Sokoban extends AnchorPane{
         fileChooser.setInitialDirectory(new File("C:\\Users\\" + System.getProperty("user.name") + "\\Desktop"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Dateien (*.txt)", "*.txt"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Alle Dateien (*.*)", "*"));
-        //TODO Wenn möglich anpassen das ownerWindow das Programm ist
         File file = fileChooser.showOpenDialog(null);
         if(file != null){
             readLevel(file.getPath(), true);
@@ -606,18 +650,24 @@ public class Sokoban extends AnchorPane{
         }
     }
 
-    private String getDataDirectory(){
+    /**
+     * get (and create) level or saves directory
+     * @param levelorsave true: \level, false: \saves
+     * @return
+     */
+    private String getDataDirectory(boolean levelorsave){
 
-        String dir = "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\GOK_Sokoban";
-        File theDir = new File(dir);
+        String levelDirString = StandardDirectory + "\\";
+        levelDirString += levelorsave ?  "level" : "save";
+        File mainDir = new File(StandardDirectory);
+        File levelDir = new File(levelDirString);
 
-// if the directory does not exist, create it
-        if (!theDir.exists()) {
-            System.out.println("creating directory: " + theDir.getName());
+        // if the directory does not exist, create it
+        if (!mainDir.exists()) {
             boolean result = false;
 
             try{
-                result = theDir.mkdir();
+                result = mainDir.mkdir();
 
             }
             catch(SecurityException se){
@@ -628,7 +678,21 @@ public class Sokoban extends AnchorPane{
                 return null;
             }
         }
-        return dir;
+        if(!levelDir.exists()){
+            boolean result = false;
+            try{
+                result = levelDir.mkdir();
+
+            }catch (SecurityException se){
+                se.printStackTrace();
+            }
+            if(!result){
+                System.out.println("LevelDir NOT created");
+                return null;
+            }
+        }
+        return levelDirString;
     }
+
 
 }

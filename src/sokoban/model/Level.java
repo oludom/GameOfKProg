@@ -21,6 +21,7 @@ public class Level implements Serializable {
     private transient Sokoban parent;
     private String title;
     private int levelNumber;
+    private String levelFile;
     private ArrayList<State> moves = new ArrayList<>();
 
     /**
@@ -29,11 +30,12 @@ public class Level implements Serializable {
      * @param parent reference to Sokoban parent to be able to start next level
      * @param title name of level as set in levels file
      */
-    public Level(ArrayList<String> leveldata, Sokoban parent, String title, int levelNumber){
+    public Level(ArrayList<String> leveldata, Sokoban parent, String title, int levelNumber, String levelFile){
 
         this.parent = parent;
         this.title = title;
         this.levelNumber = levelNumber;
+        this.levelFile = levelFile;
 
         sokoban.Vector dim = countLevelSize(leveldata);
         int x = dim.getX();
@@ -269,6 +271,10 @@ public class Level implements Serializable {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getLevelFile() {
+        return levelFile;
     }
 
     /**
