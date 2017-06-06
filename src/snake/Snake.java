@@ -14,6 +14,9 @@ import java.util.ArrayList;
 
 /**
  * @author Micha Heiß
+ *
+ * Code source (JavaScript, siehe Kommentare): https://www.youtube.com/watch?v=xGmXxpIj6vs
+ *
  */
 public class Snake extends AnchorPane{
 
@@ -95,7 +98,9 @@ public class Snake extends AnchorPane{
 
     }
 
-
+    /**
+     * refresh canvas
+     */
     private void render(){
 
         double width, height, levelSize;
@@ -139,6 +144,9 @@ public class Snake extends AnchorPane{
 
     }
 
+    /**
+     * calculate changes
+     */
     private void update(){
 
 
@@ -146,6 +154,7 @@ public class Snake extends AnchorPane{
         px+=xv;
 //                    py+=yv;
         py+=yv;
+
         if(px<0) {
             px= tc-1;
         }
@@ -190,6 +199,10 @@ public class Snake extends AnchorPane{
 
     }
 
+    /**
+     * called if MDIWindow gets focus
+     * sets the Key controlls for game
+     */
     public void registerKeyPush(){
         primaryStage.getScene().setOnKeyPressed(event -> {
             System.out.println("fired!");
@@ -213,21 +226,6 @@ public class Snake extends AnchorPane{
             }
         });
 
-//                function keyPush(evt) {
-//                switch(evt.keyCode) {
-//                    case 37: // left
-//                        xv=-1;yv=0;
-//                        break;
-//                    case 38: // up
-//                        xv=0;yv=-1;
-//                        break;
-//                    case 39: // right
-//                        xv=1;yv=0;
-//                        break;
-//                    case 40: // down
-//                        xv=0;yv=1;
-//                        break;
-//                }
     }
 
     public void setMdiWindow(MDIWindow mdiWindow) {
