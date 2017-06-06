@@ -128,7 +128,7 @@ public class Main extends Application {
                 break;
             case Snake:
                 try {
-                    content = new Snake();
+                    content = new Snake(primaryStage);
                     titel = "Snake";
                 } catch (Exception e) {
                     e.printStackTrace();
