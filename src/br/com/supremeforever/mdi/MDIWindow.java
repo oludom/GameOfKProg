@@ -26,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.TransformChangedEvent;
 import javafx.util.Duration;
+import snake.Snake;
 import sokoban.Sokoban;
 
 import java.io.InputStream;
@@ -129,6 +130,10 @@ public class MDIWindow extends BorderPane {
             if(content.getClass().equals(Sokoban.class)){
                 Sokoban s = (Sokoban) content;
                 s.bindListener();
+            }
+            if(content.getClass().equals(Snake.class)){
+                Snake s = (Snake) content;
+                s.registerKeyPush();
             }
         });
     }

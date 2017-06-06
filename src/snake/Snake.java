@@ -1,9 +1,9 @@
 package snake;
 
+import br.com.supremeforever.mdi.MDIWindow;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sokoban.Sokoban;
@@ -11,7 +11,6 @@ import sokoban.Vector;
 
 import java.util.ArrayList;
 
-import static java.lang.Thread.sleep;
 
 /**
  * @author Micha Heiß
@@ -21,8 +20,9 @@ public class Snake extends AnchorPane{
     private Canvas canvas;
     private GraphicsContext c;
     private Stage primaryStage;
+    private MDIWindow mdiWindow;
 
-    private int px,py,gs,tc,ax,ay,xv,yv,tail;
+    private int px,py,gsw,gsh,tc,ax,ay,xv,yv,tail;
     private ArrayList<Vector> trail;
 
     public Snake(Stage primaryStage){
@@ -37,10 +37,13 @@ public class Snake extends AnchorPane{
         c = canvas.getGraphicsContext2D();
         this.getChildren().add(canvasPane);
 
-//        AnchorPane.setBottomAnchor(canvasPane, 0d);
-//        AnchorPane.setLeftAnchor(canvasPane, 0d);
-//        AnchorPane.setTopAnchor(canvasPane, 0d);
-//        AnchorPane.setRightAnchor(canvasPane, 0d);
+        this.widthProperty().addListener(e -> render());
+        this.heightProperty().addListener(e -> render());
+
+        AnchorPane.setBottomAnchor(canvasPane, 0d);
+        AnchorPane.setLeftAnchor(canvasPane, 0d);
+        AnchorPane.setTopAnchor(canvasPane, 0d);
+        AnchorPane.setRightAnchor(canvasPane, 0d);
 
 
 
@@ -54,6 +57,7 @@ public class Snake extends AnchorPane{
 
                         e.printStackTrace();
                     }
+                    update();
                     render();
                 }
 
@@ -63,15 +67,21 @@ public class Snake extends AnchorPane{
 
 
 //                px=py=10;
+        // player/snake position
         px = 10;
         py = 10;
 //                gs=tc=20;
-        gs = 20;
+        // square width/height
+        gsw = 20;
+        gsh = 20;
+        // dimensions
         tc = 20;
 //                ax=ay=15;
+        // apple position
         ax = 15;
         ay = 15;
 //                xv=yv=0;
+        // Velocity
         xv = 0;
         yv = 0;
 //                trail=[];
@@ -87,6 +97,49 @@ public class Snake extends AnchorPane{
 
 
     private void render(){
+
+        double width, height, levelSize;
+        int divider;
+
+        if(mdiWindow != null) {
+            width = mdiWindow.getWidth();
+            height = mdiWindow.getHeight();
+            canvas.setWidth(width);
+            canvas.setHeight(height);
+            // set title to level name
+//            mdiWindow.setMdiTitle("");
+        }else {
+            width = canvas.getWidth();
+            height = canvas.getHeight();
+        }
+
+
+        gsw = (int)width/tc;
+        gsh = (int)height/tc;
+
+
+
+//                    ctx.fillStyle="black";
+        c.setFill(Color.BLACK);
+//                    ctx.fillRect(0,0,canv.width,canv.height);
+        c.fillRect(0,0, canvas.getWidth(),canvas.getHeight());
+//
+//                    ctx.fillStyle="lime";
+        c.setFill(Color.LIME);
+//                    for(var i=0;i<trail.length;i++) {
+        for(int i=0;i<trail.size();i++) {
+//                        ctx.fillRect(trail[i].x*gs,trail[i].y*gs,gs-2,gs-2);
+            c.fillRect(trail.get(i).getX()*gsw,trail.get(i).getY()*gsh,gsw-2,gsh-2);
+        }
+
+//                    ctx.fillStyle="red";
+        c.setFill(Color.RED);
+//                    ctx.fillRect(ax*gs,ay*gs,gs-2,gs-2);
+        c.fillRect(ax*gsw,ay*gsh,gsw-2,gsh-2);
+
+    }
+
+    private void update(){
 
 
 //                    px+=xv;
@@ -105,17 +158,8 @@ public class Snake extends AnchorPane{
         if(py>tc-1) {
             py= 0;
         }
-//                    ctx.fillStyle="black";
-        c.setFill(Color.BLACK);
-//                    ctx.fillRect(0,0,canv.width,canv.height);
-        c.fillRect(0,0, canvas.getWidth(),canvas.getHeight());
-//
-//                    ctx.fillStyle="lime";
-        c.setFill(Color.LIME);
-//                    for(var i=0;i<trail.length;i++) {
+
         for(int i=0;i<trail.size();i++) {
-//                        ctx.fillRect(trail[i].x*gs,trail[i].y*gs,gs-2,gs-2);
-            c.fillRect(trail.get(i).getX()*gs,trail.get(i).getY()*gs,gs-2,gs-2);
 //                        if(trail[i].x==px && trail[i].y==py) {
 //                            tail = 5;
 //                        }
@@ -123,6 +167,7 @@ public class Snake extends AnchorPane{
                 tail = 5;
             }
         }
+
 //                    trail.push({x:px,y:py});
         trail.add(new Vector(px,py));
 //                    while(trail.length>tail) {
@@ -142,16 +187,10 @@ public class Snake extends AnchorPane{
             ax=(int)Math.floor(Math.random()*tc);
             ay=(int)Math.floor(Math.random()*tc);
         }
-//                    ctx.fillStyle="red";
-        c.setFill(Color.RED);
-//                    ctx.fillRect(ax*gs,ay*gs,gs-2,gs-2);
-        c.fillRect(ax*gs,ay*gs,gs-2,gs-2);
-
-
 
     }
 
-    private void registerKeyPush(){
+    public void registerKeyPush(){
         primaryStage.getScene().setOnKeyPressed(event -> {
             System.out.println("fired!");
             switch (event.getCode()) {
@@ -191,4 +230,7 @@ public class Snake extends AnchorPane{
 //                }
     }
 
+    public void setMdiWindow(MDIWindow mdiWindow) {
+        this.mdiWindow = mdiWindow;
+    }
 }
