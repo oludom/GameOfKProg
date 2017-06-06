@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import mvcexample.MVCpolynom;
 import regenbogen.Regenbogen;
 import siebenspaltenprime.SiebenSpaltenPrimezahl;
+import snake.Snake;
 import sokoban.Sokoban;
 
 /**
@@ -121,6 +122,14 @@ public class Main extends Application {
                 try {
                     content = new SiebenSpaltenPrimezahl(); //FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
                     titel = "Sieben Spalten Primzahl";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case Snake:
+                try {
+                    content = new Snake();
+                    titel = "Snake";
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

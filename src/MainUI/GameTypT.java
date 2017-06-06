@@ -12,5 +12,6 @@ public enum GameTypT {
     Connect6,
     MVCexample,
     GameOfLife,
-    Sokoban
+    Sokoban,
+    Snake
 }
