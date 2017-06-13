@@ -11,6 +11,7 @@ import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;

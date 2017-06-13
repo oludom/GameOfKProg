@@ -39,6 +39,8 @@ public class Main extends Application {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(800, 600);
 
+        Main.primaryStage = primaryStage;
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/MainUI/Main.fxml"));
         Node node = fxmlLoader.load();
         root.getChildren().add(node);

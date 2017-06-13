@@ -13,6 +13,6 @@ public enum GameTypT {
     MVCexample,
     GameOfLife,
     Sokoban,
-    Snake
+    Snake,
     None
 }
