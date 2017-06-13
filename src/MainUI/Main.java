@@ -2,7 +2,11 @@ package MainUI;
 
 import br.com.supremeforever.mdi.MDICanvas;
 import br.com.supremeforever.mdi.MDIWindow;
+import connect6.ui.BasicUIX;
+import connect6.ui.GameModusT;
 import drehsafe.DrehSafe;
+import gol.GameOfLife;
+import gol.World;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +29,6 @@ public class Main extends Application {
     public static HostServices hostServices;
     static MDICanvas mdiCanvas;
     private Scene scene;
-
     private static Stage primaryStage;
 
 
@@ -49,15 +52,12 @@ public class Main extends Application {
         //Fit it to the mdi Pane
         MDIAnchor.setBottomAnchor(mdiCanvas, 0d);
         MDIAnchor.setLeftAnchor(mdiCanvas, 0d);
-        MDIAnchor.setTopAnchor(mdiCanvas, 0d);
+        MDIAnchor.setTopAnchor(mdiCanvas, 0d);//Button place
         MDIAnchor.setRightAnchor(mdiCanvas, 0d);
         //Put the container Into the mdi pane
         MDIAnchor.getChildren().add(mdiCanvas);
 
-        this.scene = new Scene(root);
-
-        this.primaryStage = primaryStage;
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
     }
@@ -65,7 +65,7 @@ public class Main extends Application {
         return scene;
     }
 
-    public static void addContent(GameTypT gameTypT){
+    public static void addContent(GameTypT gameTypT, Object gameValue){
         Node content = null;
         MDIWindow mdiWindow;
         String titel = "Titel";
@@ -88,7 +88,12 @@ public class Main extends Application {
                 break;
             case Connect6:
                 try {
-                    content = FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                    if(gameValue != null){
+                        if(gameValue.getClass().equals(GameModusT.class))
+                            content = new BasicUIX((GameModusT) gameValue);
+                    }else{
+                        content = new BasicUIX();//FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                    }
                     titel = "Connect 6";
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -104,7 +109,13 @@ public class Main extends Application {
                 break;
             case GameOfLife:
                 try {
-                    content = FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                    if(gameValue != null){
+                        if(gameValue.getClass().equals(World.class))
+                            content = new GameOfLife((World) gameValue);
+                    }else{
+                        content = new GameOfLife();
+                        System.out.println("New GOL");
+                    }
                     titel = "Game Of Life";
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -141,11 +152,15 @@ public class Main extends Application {
             mdiWindow = new MDIWindow("UniqueID" + count,
                     new ImageView("/assets/WindowIcon.png"),
                     titel + " " + count,
-                    content);
+                    content,gameTypT);
+            //Set MDI Size
+            //Add it to the container
             mdiCanvas.addMDIWindow(mdiWindow);
             if(gameTypT.equals(GameTypT.Sokoban)) ((Sokoban) content).setMdiWindow(mdiWindow);
             if(gameTypT.equals(GameTypT.Snake)) ((Snake) content).setMdiWindow(mdiWindow);
         }
 
     }
+
+
 }

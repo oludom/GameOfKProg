@@ -1,63 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Point3D?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+    <!-- fx:controller="gol.GoLController" -->
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
-          <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
+        <Menu fx:id="colorMenu" mnemonicParsing="false" text="Farbe" />
+        <Menu fx:id="modusMenu" mnemonicParsing="false" text="Modus">
+               <items>
+                  <RadioMenuItem fx:id="runItem" mnemonicParsing="false" text="Laufen">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="modus" />
+                     </toggleGroup></RadioMenuItem>
+                  <RadioMenuItem fx:id="drawItem" mnemonicParsing="false" text="Malen" toggleGroup="$modus" />
+                  <RadioMenuItem fx:id="placeItem" mnemonicParsing="false" selected="true" text="Setzen" toggleGroup="$modus" />
+               </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-          </items>
-        </Menu>
+        <Menu fx:id="speedMenu" mnemonicParsing="false" text="Geschwindigkeit" />
+            <Menu fx:id="saveloadMenu" mnemonicParsing="false" text="Laden / Speichern">
+              <items>
+                <MenuItem fx:id="loadItem" mnemonicParsing="false" text="Welt laden" />
+                  <MenuItem fx:id="saveItem" mnemonicParsing="false" text="Welt speichern" />
+              </items>
+            </Menu>
+            <Menu fx:id="windowMenu" mnemonicParsing="false" text="Fenster">
+              <items>
+                <MenuItem fx:id="newItem" mnemonicParsing="false" text="Neues Fenster erzeugen" />
+                  <MenuItem fx:id="copyItem" mnemonicParsing="false" text="Kopie der Welt erzeugen" />
+              </items>
+            </Menu>
+            <Menu fx:id="fugureItem" mnemonicParsing="false" text="Figuren">
+              <items>
+                <MenuItem fx:id="gliderItem" mnemonicParsing="false" text="Gleiter einfügen" />
+                  <MenuItem fx:id="bipolItem" mnemonicParsing="false" text="Bipol einfügen" />
+                  <MenuItem fx:id="tripolItem" mnemonicParsing="false" text="Tripol einfügen" />
+                  <MenuItem fx:id="seglerItem" mnemonicParsing="false" text="Segler einfügen" />
+                  <MenuItem fx:id="cannonItem" mnemonicParsing="false" text="Cannon einfügen" />
+                  <MenuItem fx:id="clearItem" mnemonicParsing="false" text="Welt leeren" />
+              </items>
+            </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-      <children>
-        <Label alignment="CENTER" layoutX="157.0" layoutY="75.0" style="&#10;" text="Programm ist noch in Arbeit!" textAlignment="CENTER" textFill="RED" wrapText="false">
-          <font>
-            <Font size="18.0" />
-          </font>
-        </Label>
-      </children>
-    </AnchorPane>
+      <AnchorPane fx:id="anchorPane" maxHeight="10000.0" maxWidth="10000.0" prefHeight="1000.0" prefWidth="1000.0">
+         <rotationAxis>
+            <Point3D />
+         </rotationAxis>
+         <children>
+            <GridPane id="gridPane" fx:id="gridPane" alignment="CENTER" gridLinesVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+            </GridPane>
+         </children></AnchorPane>
   </children>
 </VBox>

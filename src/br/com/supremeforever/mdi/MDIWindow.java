@@ -4,11 +4,13 @@
  */
 package br.com.supremeforever.mdi;
 
+import MainUI.GameTypT;
+import connect6.ui.BasicUIX;
+import gol.GameOfLife;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -24,7 +26,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.transform.TransformChangedEvent;
 import javafx.util.Duration;
 import snake.Snake;
 import sokoban.Sokoban;
@@ -71,6 +72,10 @@ public class MDIWindow extends BorderPane {
     double lastX;
     private String windowsTitle;
 
+    //TODO Custom ADD
+    private GameTypT gameTyp = GameTypT.None;
+    private Object gameObject;
+
     /**
      * @param logoImage
      * @param title
@@ -108,6 +113,17 @@ public class MDIWindow extends BorderPane {
             centerMdiWindow();
             maximizeRestoreMdiWindow();
         }
+    }
+
+    /**
+     * @param logoImage
+     * @param title
+     * @param content
+     * @throws Exception
+     */
+    public MDIWindow(String mdiWindowID, ImageView logoImage, String title, Node content, GameTypT gameTyp) {
+        this.gameTyp = gameTyp;
+        init(mdiWindowID, logoImage, title, content);
     }
 
     private void init(String mdiWindowID, ImageView logoImage, String title, Node content) {
@@ -205,8 +221,6 @@ public class MDIWindow extends BorderPane {
             previousHeightToResize = getHeight();
             previousWidthToResize = getWidth();
             isMaximized = true;
-            // changed
-//            borderPane.fireEvent(new TransformChangedEvent());
             try {
                 btnMaximize.setGraphic(getImageFromAssets("restore.png"));
             } catch (Exception ex) {
@@ -267,7 +281,7 @@ public class MDIWindow extends BorderPane {
     private void moveListener() {
         this.setOnMouseDragged((MouseEvent dragEvent) -> {
             if (!isMaximized) {
-                //State
+                //Move
                 x += dragEvent.getSceneX() - mousex;
                 y += dragEvent.getSceneY() - mousey;
                 //again set current Mouse x AND y position
@@ -275,10 +289,10 @@ public class MDIWindow extends BorderPane {
                 mousey = dragEvent.getSceneY();
                 if (resizeMode == resizeMode.NONE) {
                     //set the positon of Node after calculation
-                    if (borderPane.getWidth() < borderPane.getParent().getLayoutBounds().getWidth()) {//if the panel is not biger then the window: State
+                    if (borderPane.getWidth() < borderPane.getParent().getLayoutBounds().getWidth()) {//if the panel is not biger then the window: Move
                         borderPane.setLayoutX(x);
                     }
-                    if (borderPane.getHeight() < borderPane.getParent().getLayoutBounds().getHeight()) {//if the panel is not biger then the window: State
+                    if (borderPane.getHeight() < borderPane.getParent().getLayoutBounds().getHeight()) {//if the panel is not biger then the window: Move
                         borderPane.setLayoutY(y);
                     }
 
@@ -436,14 +450,32 @@ public class MDIWindow extends BorderPane {
             }
             isClosed.setValue(true);
         });
+        //TODO Custom Content
+
+        try{
+            if(GameTypT.GameOfLife == gameTyp){
+                if(gameObject !=null){
+                    GameOfLife gol = (GameOfLife) gameObject;
+                    gol.close();
+                }
+            }else if(GameTypT.Connect6 == gameTyp){
+                if(gameObject != null){
+                    BasicUIX uix = (BasicUIX) gameObject;
+                    uix.close();
+                }
+            }
+            else {
+                System.out.println("No Content "+gameTyp);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     private void bringToFrontListener() {
 
         this.setOnMouseClicked((MouseEvent t) -> {
             borderPane.toFront();
-            // TODO changed by user
-            this.requestFocus();
         });
     }
 
@@ -530,7 +562,16 @@ public class MDIWindow extends BorderPane {
         this.btnMinimize = btnMinimize;
     }
 
-    public double getPreviousWidthToResize() {
-        return previousWidthToResize;
+    public void setContent(Node content){
+        System.out.println(content.getClass());
+        mdiContent = makeContentPane(content);
+        this.setCenter(mdiContent);
     }
+
+    public void setContent(Node content, Object gameObject){
+        this.gameObject = gameObject;
+        mdiContent = makeContentPane(content);
+        this.setCenter(mdiContent);
+    }
+
 }

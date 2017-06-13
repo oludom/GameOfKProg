@@ -14,4 +14,5 @@ public enum GameTypT {
     GameOfLife,
     Sokoban,
     Snake
+    None
 }

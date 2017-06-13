@@ -40,6 +40,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         help.setOnAction(event -> System.exit(0));
+
         mvcexample.setOnAction(event ->  Main.addContent(GameTypT.MVCexample));
         drehsafe.setOnAction(event ->  Main.addContent(GameTypT.DrehSafe));
         sokoban.setOnAction(event ->  Main.addContent(GameTypT.Sokoban));
@@ -48,7 +49,6 @@ public class Controller implements Initializable {
         connect6.setOnAction(event ->  Main.addContent(GameTypT.Connect6));
         gameoflife.setOnAction(event ->  Main.addContent(GameTypT.GameOfLife));
         snake.setOnAction(event -> Main.addContent(GameTypT.Snake));
-
 
     }
 
