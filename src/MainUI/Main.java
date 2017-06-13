@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import mvcexample.MVCpolynom;
 import regenbogen.Regenbogen;
 import siebenspaltenprime.SiebenSpaltenPrimezahl;
+import snake.Snake;
 import sokoban.Sokoban;
 
 /**
@@ -136,6 +137,14 @@ public class Main extends Application {
                     e.printStackTrace();
                 }
                 break;
+            case Snake:
+                try {
+                    content = new Snake(primaryStage);
+                    titel = "Snake";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
         }
         if(content != null){
             count++;
@@ -148,6 +157,7 @@ public class Main extends Application {
             //Add it to the container
             mdiCanvas.addMDIWindow(mdiWindow);
             if(gameTypT.equals(GameTypT.Sokoban)) ((Sokoban) content).setMdiWindow(mdiWindow);
+            if(gameTypT.equals(GameTypT.Snake)) ((Snake) content).setMdiWindow(mdiWindow);
         }
 
     }
