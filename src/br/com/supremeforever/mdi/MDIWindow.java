@@ -11,6 +11,7 @@ import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -27,6 +28,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import snake.Snake;
+import sokoban.Sokoban;
 
 import java.io.InputStream;
 import java.util.logging.Level;
@@ -138,6 +141,18 @@ public class MDIWindow extends BorderPane {
         this.setTop(makeTitlePane(title));
         mdiContent = makeContentPane(content);
         this.setCenter(mdiContent);
+
+        // TODO changed by user
+        this.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if(content.getClass().equals(Sokoban.class)){
+                Sokoban s = (Sokoban) content;
+                s.bindListener();
+            }
+            if(content.getClass().equals(Snake.class)){
+                Snake s = (Snake) content;
+                s.registerKeyPush();
+            }
+        });
     }
 
     public Node getContent() {

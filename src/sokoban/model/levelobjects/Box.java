@@ -3,12 +3,15 @@ package sokoban.model.levelobjects;
 import javafx.scene.image.Image;
 import sokoban.Vector;
 
+import java.io.Serializable;
+
 /**
  * @author Micha Heiß
  */
-public class Box implements LevelObject {
+public class Box implements LevelObject, Serializable {
 
     private static Image image = new Image("sokoban/images/wood.png");
+    private static Image cross = new Image("sokoban/images/wood_red.png");
     private Vector position;
 
     public Vector getPosition() {
@@ -31,5 +34,8 @@ public class Box implements LevelObject {
 
     public static Image getImage() {
         return image;
+    }
+    public static Image toImage(boolean red){
+        return red ? cross : image;
     }
 }
