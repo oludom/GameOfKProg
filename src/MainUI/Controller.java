@@ -35,6 +35,8 @@ public class Controller implements Initializable {
     private MenuItem gameoflife;
     @FXML
     private MenuItem snake;
+    @FXML
+    private MenuItem carcassonne;
 
     // TODO DELETE as example
     @Override
@@ -49,7 +51,7 @@ public class Controller implements Initializable {
         connect6.setOnAction(event ->  Main.addContent(GameTypT.Connect6,null));
         gameoflife.setOnAction(event ->  Main.addContent(GameTypT.GameOfLife,null));
         snake.setOnAction(event -> Main.addContent(GameTypT.Snake,null));
-
+        carcassonne.setOnAction(event -> Main.addContent(GameTypT.Carcassonne, null));
     }
 
     public AnchorPane getMDIAnchor() {

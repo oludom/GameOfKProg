@@ -2,6 +2,7 @@ package MainUI;
 
 import br.com.supremeforever.mdi.MDICanvas;
 import br.com.supremeforever.mdi.MDIWindow;
+import carcassonne.ui.Carcassonne;
 import connect6.ui.BasicUIX;
 import connect6.ui.GameModusT;
 import drehsafe.DrehSafe;
@@ -143,6 +144,14 @@ public class Main extends Application {
                 try {
                     content = new Snake(primaryStage);
                     titel = "Snake";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case Carcassonne:
+                try {
+                    content = new Carcassonne();
+                    titel = "Carcassonne";
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
