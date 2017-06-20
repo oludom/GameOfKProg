@@ -17,10 +17,12 @@ public class Regenbogen extends AnchorPane{
 
     AnchorPane anchorPane = this;
 
+    private boolean run = true;
+
     public Regenbogen() {
         new Thread(){
             public void run(){
-                while(true){
+                while(run){
                     try {
                         sleep(1000);//Thread schläft 1000 ms = 1 sek
                     } catch (InterruptedException e) {
@@ -85,5 +87,9 @@ public class Regenbogen extends AnchorPane{
     private String toHex(Color c){
         return String.format("#%02X%02X%02X", (int)(c.getRed()*255),
                 (int)(c.getGreen()*255), (int)(c.getBlue()*255));
+    }
+
+    public void close(){
+        run = false;
     }
 }

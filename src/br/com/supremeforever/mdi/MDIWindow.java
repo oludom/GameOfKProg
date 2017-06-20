@@ -28,6 +28,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import regenbogen.Regenbogen;
 import snake.Snake;
 import sokoban.Sokoban;
 
@@ -464,6 +465,16 @@ public class MDIWindow extends BorderPane {
                     BasicUIX uix = (BasicUIX) gameObject;
                     uix.close();
                 }
+            }else if(GameTypT.Snake == gameTyp){
+                if(gameObject != null){
+                    Snake snake = (Snake) gameObject;
+                    snake.close();
+                }
+            }else if(GameTypT.Regenbogen == gameTyp){
+                if(gameObject != null){
+                    Regenbogen regenbogen = (Regenbogen) gameObject;
+                    regenbogen.close();
+                }
             }
             else {
                 System.out.println("No Content "+gameTyp);
@@ -575,4 +586,7 @@ public class MDIWindow extends BorderPane {
         this.setCenter(mdiContent);
     }
 
+    public void setGameObject(Object gameObject) {
+        this.gameObject = gameObject;
+    }
 }

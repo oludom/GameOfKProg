@@ -169,6 +169,8 @@ public class Main extends Application {
             mdiCanvas.addMDIWindow(mdiWindow);
             if(gameTypT.equals(GameTypT.Sokoban)) ((Sokoban) content).setMdiWindow(mdiWindow);
             if(gameTypT.equals(GameTypT.Snake)) ((Snake) content).setMdiWindow(mdiWindow);
+            if(gameTypT.equals(GameTypT.Connect6)) mdiWindow.setGameObject(content);
+            if(gameTypT.equals(GameTypT.Regenbogen)) mdiWindow.setGameObject(content);
         }
 
     }

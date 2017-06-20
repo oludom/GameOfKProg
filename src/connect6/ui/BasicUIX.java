@@ -837,7 +837,7 @@ public class BasicUIX extends BorderPane {
 
     public void close(){
         try {
-            timer.stop();
+            if(timer != null) timer.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }

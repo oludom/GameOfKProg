@@ -28,6 +28,8 @@ public class Snake extends AnchorPane{
     private int px,py,gsw,gsh,tc,ax,ay,xv,yv,tail;
     private ArrayList<Vector> trail;
 
+    private boolean run = true;
+
     public Snake(Stage primaryStage){
 
         this.primaryStage = primaryStage;
@@ -53,7 +55,7 @@ public class Snake extends AnchorPane{
 //                setInterval(game,1000/10);
         new Thread(){
             public void run(){
-                while(true){
+                while(run){
                     try {
                         sleep(1000/10);
                     } catch (InterruptedException e) {
@@ -63,7 +65,7 @@ public class Snake extends AnchorPane{
                     update();
                     render();
                 }
-
+                System.out.println("Snake Thread close");
             }
         }.start();
 
@@ -119,8 +121,8 @@ public class Snake extends AnchorPane{
         }
 
 
-        gsw = (int)width/tc;
-        gsh = (int)height/tc;
+        gsw = (int)width/(tc);
+        gsh = (int)height/(tc+1);
 
 
 
@@ -205,7 +207,6 @@ public class Snake extends AnchorPane{
      */
     public void registerKeyPush(){
         primaryStage.getScene().setOnKeyPressed(event -> {
-            System.out.println("fired!");
             switch (event.getCode()) {
                 case UP:
                     xv=0;
@@ -230,5 +231,11 @@ public class Snake extends AnchorPane{
 
     public void setMdiWindow(MDIWindow mdiWindow) {
         this.mdiWindow = mdiWindow;
+        mdiWindow.setGameObject(this);
+    }
+
+    public void close(){
+        System.out.println("closeFunction!");
+        run = false;
     }
 }
