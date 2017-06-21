@@ -150,7 +150,8 @@ public class Main extends Application {
                 break;
             case Carcassonne:
                 try {
-                    content = new Carcassonne();
+                    Carcassonne c = new Carcassonne();
+                    c.start(new Stage());
                     titel = "Carcassonne";
                 } catch (Exception e) {
                     e.printStackTrace();

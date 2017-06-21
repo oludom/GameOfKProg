@@ -49,46 +49,41 @@ public class Carcassonne extends AnchorPane{
     private double originX = 0, originY = 0;
     Carcassonne me = this;
 
-    public Carcassonne() throws Exception {
-//        primaryStage.setTitle("Carcassonne");
-        CanvasPane canvasPane = new CanvasPane(800, 600);
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Carcassonne");
+        CanvasPane canvasPane = new CanvasPane(1920, 1080);
         canvas = canvasPane.getCanvas();
         c = canvas.getGraphicsContext2D();
 
         root = new BorderPane(canvasPane);
         root.setBottom(playerStatusBar.getNode());
-        this.getChildren().add(root);
-        AnchorPane.setBottomAnchor(root,0d);
-        AnchorPane.setTopAnchor(root,0d);
-        AnchorPane.setLeftAnchor(root,0d);
-        AnchorPane.setRightAnchor(root, 0d);
-//        Scene scene = new Scene(root, 1200,800);
-//        primaryStage.setScene(scene);
-        //scene.getStylesheets().add("carcassonne/css/styles.css");
+        Scene scene = new Scene(root, 1200,800);
+        primaryStage.setScene(scene);
+//        scene.getStylesheets().add("css/styles.css");
 
-//        primaryStage.show();
+        primaryStage.show();
 
-//
-//        scene.widthProperty().addListener(new ChangeListener<Number>() {
-//            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-//                render();
-//            }
-//        });
-//        scene.heightProperty().addListener(new ChangeListener<Number>() {
-//            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-//                render();
-//            }
-//        });
-//
-//        scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-//            if(key.getCode()== KeyCode.F11) {
-////                primaryStage.setFullScreen(true);
-////                primaryStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
-////                primaryStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
-//                render();
-//            }
-//        });
-//        primaryStage.maximizedProperty().addListener(event -> render());
+
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                render();
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+                render();
+            }
+        });
+
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            if(key.getCode()== KeyCode.F11) {
+                primaryStage.setFullScreen(true);
+                primaryStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
+                primaryStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
+                render();
+            }
+        });
+        primaryStage.maximizedProperty().addListener(event -> render());
 
 
         /*
@@ -253,35 +248,35 @@ public class Carcassonne extends AnchorPane{
     }
 
     public void render(){
-            // canvas background
-            c.setFill(Color.WHEAT);
-            c.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        // canvas background
+        c.setFill(Color.WHEAT);
+        c.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-            //draw landschaftskarten
-            for (Landschaftskarte lkarte : gelegteLandschaftskarten) {
-                c.drawImage(lkarte.getImage(), lkarte.getX() * lkarte.getWidth() + originX,
-                        lkarte.getY() * lkarte.getHeight() + originY);
-            }
+        //draw landschaftskarten
+        for (Landschaftskarte lkarte : gelegteLandschaftskarten) {
+            c.drawImage(lkarte.getImage(), lkarte.getX() * lkarte.getWidth() + originX,
+                    lkarte.getY() * lkarte.getHeight() + originY);
+        }
 
-            //draw Gefolgsmann
-            if(spielers != null) {
-                for (Spieler spieler : spielers) {
-                    for (Gefolgsmann gefolgsmann : spieler.getAllGefolgsleute()) {
-                        if (gefolgsmann.getRolle() != RolleT.FREI && gefolgsmann.getAbsolutePosition() != null) {
-                            c.drawImage(gefolgsmann.getImage(), gefolgsmann.getAbsolutePosition().getX() + originX,
-                                    gefolgsmann.getAbsolutePosition().getY() + originY, 25, 24);
-                        }
-
+        //draw Gefolgsmann
+        if(spielers != null) {
+            for (Spieler spieler : spielers) {
+                for (Gefolgsmann gefolgsmann : spieler.getAllGefolgsleute()) {
+                    if (gefolgsmann.getRolle() != RolleT.FREI && gefolgsmann.getAbsolutePosition() != null) {
+                        c.drawImage(gefolgsmann.getImage(), gefolgsmann.getAbsolutePosition().getX() + originX,
+                                gefolgsmann.getAbsolutePosition().getY() + originY, 25, 24);
                     }
+
                 }
             }
+        }
 
-            //draw canvas Buttons
-            for (CanvasButton cb : canvasButtons) {
-                c.drawImage(cb.getImage(), cb.getX(), cb.getY(), cb.getWidth(), cb.getHeight());
-            }
-            //draw currentKarte
-            c.drawImage(currentLKarte.getImage(), 600, 20, 60, 60);
+        //draw canvas Buttons
+        for (CanvasButton cb : canvasButtons) {
+            c.drawImage(cb.getImage(), cb.getX(), cb.getY(), cb.getWidth(), cb.getHeight());
+        }
+        //draw currentKarte
+        c.drawImage(currentLKarte.getImage(), 600, 20, 60, 60);
 
     }
 
@@ -293,7 +288,7 @@ public class Carcassonne extends AnchorPane{
             double x = e.getSceneX()-originX, y = e.getSceneY()-originY;
 
             double lx = landschaftskarte.getX()*landschaftskarte.getWidth(), ly = landschaftskarte.getY()*landschaftskarte.getHeight(),
-                lw = landschaftskarte.getWidth(), lh = landschaftskarte.getHeight();
+                    lw = landschaftskarte.getWidth(), lh = landschaftskarte.getHeight();
 
             if (x > (lx - lw) && x < (lx + 2 * lw) && y > (ly - lh) && y < (ly + 2 * lh)) {
 
