@@ -235,7 +235,6 @@ public class Snake extends AnchorPane{
     }
 
     public void close(){
-        System.out.println("closeFunction!");
         run = false;
     }
 }

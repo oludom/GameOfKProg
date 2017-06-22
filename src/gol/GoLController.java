@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 /**
  * 16.05.2017
- *
+ * Controller für die Steuertung der UI Elemente aus der gameoflife.fxml
  * @author SWirries
  *         <p>
  *         This code is
@@ -92,6 +92,10 @@ public class GoLController implements Initializable {
         }
 
 
+        /**
+         * Getter der UI Elemente
+         * @return
+         */
 
         public AnchorPane getAnchorPane() {
                 return anchorPane;

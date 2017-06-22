@@ -10,7 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 /**
  * @author SWirries
- *
+ * UI der Siebenspaltenprimezahl
  */
 public class SiebenSpaltenPrimezahl extends AnchorPane{
 
@@ -20,7 +20,6 @@ public class SiebenSpaltenPrimezahl extends AnchorPane{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		Primer[] aPrimer = new Primer[7];
 		for(int k = 0;k < aPrimer.length; k++){
 			
@@ -34,7 +33,6 @@ public class SiebenSpaltenPrimezahl extends AnchorPane{
 		for(Primer element : aPrimer){
 			element.send(0);
 		}
-		System.out.println(" main beendet");
 	}
 
 	public SiebenSpaltenPrimezahl() {

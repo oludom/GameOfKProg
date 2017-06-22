@@ -5,7 +5,7 @@ package siebenspaltenprime;
 
 /**
  * @author SWirries
- *
+ * Ereugt Primezahlen für die Siebenspaltenprimezahl
  */
 public class Primer extends Thread{
 	
@@ -32,12 +32,18 @@ public class Primer extends Thread{
 	}
 	// \u0009 Unicode Tab
 
+	/**
+	 * Erzeugt die Verschiebung
+	 */
 	private void genTab(){
 		for(int i = 1; i <= tableIndex;i++){
 			tablePos += tabChar;
 		}
 	}
-	
+
+	/**
+	 * Fügt die Primezahl der UI hinzu
+	 */
 	protected void print(){
 		if(tablePos.length() == 0){
 			genTab();
@@ -45,18 +51,18 @@ public class Primer extends Thread{
 		if(siebenSpaltenPrimezahl != null){
 			siebenSpaltenPrimezahl.addPrime(tablePos+p);
 		}else {
-			System.out.println (tablePos+p);
+
 		}
 
 		
 	}
-	
+
+	/**
+	 * Run Methode des Threads
+	 */
 	public void run(){
-		//System.out.println (currentThread() +" Primzahl: "+p);
-		
 		print();
-		
-		//System.out.println(p);
+
 		while (true) { // Endlos-Schleife
 			int n = receive(); // Lese-Versuch
 			if (n == 0) {// wenn n=0: Ende
@@ -81,6 +87,11 @@ public class Primer extends Thread{
 	
 	private int buffer = -1; // Puffer zum Senden & Empfangen
 	// wenn < 0: leer
+
+	/**
+	 * Sendet die Primezahl an die nächste Instanz wieter
+	 * @param i
+	 */
 	synchronized void send(int i){ // Sperre erlangen
 		try {
 		while (buffer >= 0) wait();// warten bis Puffer frei
@@ -90,7 +101,11 @@ public class Primer extends Thread{
 			
 		}
 	}
-	
+
+	/**
+	 * Empfängt die Primezahl einer Instanz
+	 * @return
+	 */
 	synchronized int receive(){ // Sperre erlangen
 		int result = 0;
 		try {

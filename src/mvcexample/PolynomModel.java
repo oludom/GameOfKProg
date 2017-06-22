@@ -10,6 +10,8 @@ import java.util.Observable;
  *         <p>
  *         This code is
  *         documentation enough
+ *
+ * Modell des Poloynoms
  */
 public class PolynomModel extends Observable {
 

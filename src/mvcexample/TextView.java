@@ -14,6 +14,7 @@ import java.util.Observer;
  *         <p>
  *         This code is
  *         documentation enough
+ *  View in Textform
  */
 public class TextView extends Pane implements Observer {
     PolynomModel polynomModel;
@@ -24,7 +25,6 @@ public class TextView extends Pane implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("Update");
         if(o == polynomModel) fillText();
     }
 

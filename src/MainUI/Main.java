@@ -23,8 +23,10 @@ import snake.Snake;
 import sokoban.Sokoban;
 
 /**
- * Created by brisatc171.minto on 12/11/2015.
+ *  @author SWirries MHeiß
+ *  Hauptklasse des Programms, hat Auswahl über die Spiele und beinhaltet deren Fenster
  */
+
 public class Main extends Application {
     static int count = 0;
     public static HostServices hostServices;
@@ -39,25 +41,25 @@ public class Main extends Application {
         //Creat main Pane Layout
         AnchorPane root = new AnchorPane();
         root.setPrefSize(800, 600);
-
+        primaryStage.setTitle("Game Box");
         Main.primaryStage = primaryStage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/MainUI/Main.fxml"));
         Node node = fxmlLoader.load();
         root.getChildren().add(node);
 
-        // controller class containing UI elements
+
         Controller controller = (Controller) fxmlLoader.getController();
         AnchorPane MDIAnchor = controller.getMDIAnchor(); // MDI frame
 
-        //Creat MDI Canvas Container
+
         mdiCanvas = new MDICanvas(MDICanvas.Theme.DEFAULT);
-        //Fit it to the mdi Pane
+
         MDIAnchor.setBottomAnchor(mdiCanvas, 0d);
         MDIAnchor.setLeftAnchor(mdiCanvas, 0d);
         MDIAnchor.setTopAnchor(mdiCanvas, 0d);//Button place
         MDIAnchor.setRightAnchor(mdiCanvas, 0d);
-        //Put the container Into the mdi pane
+
         MDIAnchor.getChildren().add(mdiCanvas);
 
         primaryStage.setScene(new Scene(root));
@@ -95,7 +97,7 @@ public class Main extends Application {
                         if(gameValue.getClass().equals(GameModusT.class))
                             content = new BasicUIX((GameModusT) gameValue);
                     }else{
-                        content = new BasicUIX();//FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                        content = new BasicUIX();
                     }
                     titel = "Connect 6";
                 } catch (Exception e) {
@@ -117,7 +119,6 @@ public class Main extends Application {
                             content = new GameOfLife((World) gameValue);
                     }else{
                         content = new GameOfLife();
-                        System.out.println("New GOL");
                     }
                     titel = "Game Of Life";
                 } catch (Exception e) {
@@ -126,7 +127,7 @@ public class Main extends Application {
                 break;
             case Regenbogen:
                 try {
-                    content = new Regenbogen();//FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                    content = new Regenbogen();
                     titel = "Regenbogen";
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -134,7 +135,7 @@ public class Main extends Application {
                 break;
             case SiebenSpaltenPrimzahlen:
                 try {
-                    content = new SiebenSpaltenPrimezahl(); //FXMLLoader.load(Main.class.getResource("/MainUI/proginwork.fxml"));
+                    content = new SiebenSpaltenPrimezahl();
                     titel = "Sieben Spalten Primzahl";
                 } catch (Exception e) {
                     e.printStackTrace();

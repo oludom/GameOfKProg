@@ -2,13 +2,17 @@ package MainUI;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
-
 import java.net.URL;
 import java.util.ResourceBundle;
+
+/**
+ *  @author SWirries MHeiß
+ *  Controller für die Main.fxml
+ *  Haupftfenster von dem Programm
+ */
 
 public class Controller implements Initializable {
 
@@ -42,7 +46,9 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         help.setOnAction(event -> System.exit(0));
-
+        /**
+         * Event für das Clicken auf eine Menueintrag
+         */
         mvcexample.setOnAction(event ->  Main.addContent(GameTypT.MVCexample,null));
         drehsafe.setOnAction(event ->  Main.addContent(GameTypT.DrehSafe,null));
         sokoban.setOnAction(event ->  Main.addContent(GameTypT.Sokoban,null));

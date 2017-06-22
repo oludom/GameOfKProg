@@ -60,6 +60,9 @@ public class BasicUIX extends BorderPane {
     private double xWindowPos;
     private double yWindowPos;
 
+    /**
+     Konstruktor der ein bestimmtes Spiel startet
+     */
     public BasicUIX(GameModusT gameModusT){
         init();
         switch (gameModusT){
@@ -75,10 +78,16 @@ public class BasicUIX extends BorderPane {
         }
     }
 
+    /**
+     * Konstruktor ohne eine Spiel zu starten
+     */
     public BasicUIX() {
         init();
     }
 
+    /**
+     * Initialisiert die benötigten UI Elemente und fügt Eventhandler hinzu
+     */
     private void init(){
         // window setup
         this.setMinSize(600,600);
@@ -123,6 +132,10 @@ public class BasicUIX extends BorderPane {
 
     }
 
+    /**
+     * Zeichnet die Canvas und damit das Spielfeld neu
+     * wird min nach jedem Zug aufgerufen
+     */
     private void render(){
 
         double width = canvas.getWidth();
@@ -190,6 +203,9 @@ public class BasicUIX extends BorderPane {
         NONE, MULTIPLAYER, SINGLEPLAYER, BOT, BOTVBOT
     }
 
+    /**
+     * Inner-Klasse für die Canvas zum Spielfeld anzeigen
+     */
     private static class CanvasPane extends Pane {
 
         private final Canvas canvas;
@@ -216,6 +232,11 @@ public class BasicUIX extends BorderPane {
         }
     }
 
+    /**
+     * Auswahl des Spielmodi
+     * Der Mulitplayer ist in dieser Version nicht verfügbar
+     * @return
+     */
     private VBox getMenu_GameSelect(){
 
         // init
@@ -350,6 +371,9 @@ public class BasicUIX extends BorderPane {
 
     }
 
+    /**
+     * Startet ein Botspiel
+     */
     private void startBot() {
 
         canvasAllowUserInput = false;
@@ -418,6 +442,11 @@ public class BasicUIX extends BorderPane {
 
     }
 
+    /**
+     * Startet ein Botspiel mit definierten Bots
+     * @param blackBot
+     * @param whiteBot
+     */
     private void startBot(Bot blackBot, Bot whiteBot){
 
 
@@ -494,6 +523,9 @@ public class BasicUIX extends BorderPane {
 
     }
 
+    /**
+     * Startet ein Spieler vs Bot Spiel
+     */
     private void startSingleBot() {
 
         boolean enableHardMode = false;
@@ -534,6 +566,9 @@ public class BasicUIX extends BorderPane {
 
     }
 
+    /**
+     * Startet ein Spieler vs Spieler Spiel ohne Netzwerk
+     */
     public void startSingle() {
 
         gameType = GameType.SINGLEPLAYER;
@@ -554,6 +589,16 @@ public class BasicUIX extends BorderPane {
         c.fillOval(x*boxWidth+boardXPOS, y*boxWidth+boardYPOS, boxWidth, boxWidth);
     }
 
+    /**
+     * Dialog für eine Auswahl
+     * @param title
+     * @param header
+     * @param content
+     * @param choices
+     * @param xPosition
+     * @param yPosition
+     * @return
+     */
     private String getChoice(String title, String header, String content, ArrayList<String> choices, double xPosition, double yPosition){
 
         ChoiceDialog<String> dialog = new ChoiceDialog<>(choices.get(0), choices);
@@ -570,6 +615,12 @@ public class BasicUIX extends BorderPane {
         return "";
     }
 
+    /**
+     * Dialog um die Anzahl der Brettfelder zu wählen
+     * @param xPosition
+     * @param yPosition
+     * @return
+     */
     public int getBoardDimensions(double xPosition, double yPosition) {
         ArrayList<String> choices = new ArrayList<>();
         for(int i = 6; i<=20; i++) choices.add(""+i);
@@ -578,6 +629,12 @@ public class BasicUIX extends BorderPane {
         else return Integer.parseInt(choice);
     }
 
+    /**
+     * Zeigt einen Hover-Effekt der zulegenden Steine an
+     * @param x
+     * @param y
+     * @param color
+     */
     private void drawHover(int x, int y, Color color) {
         if(canvasAllowUserInput){
             double boardXPOS = (canvas.getWidth()-boardSize)/2;
@@ -602,6 +659,12 @@ public class BasicUIX extends BorderPane {
 //        return scene;
 //    }
 
+    /**
+     * Setzt den Stein an seine Position auf dem Spielbrett
+     * Überprüft ob Setzen möglich ist und prüft ob es einen Gewinner gibt
+     * @param x
+     * @param y
+     */
     private void setStone(int x, int y){
 
         if(canvasAllowUserInput){

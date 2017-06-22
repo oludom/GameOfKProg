@@ -13,6 +13,8 @@ import javafx.scene.layout.StackPane;
  *         <p>
  *         This code is
  *         documentation enough
+ *
+ * Customclass für ein UI Element mit Rahmen und Beschriftung
  */
 public class TitledBorderPane extends StackPane{
 
