@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
  * FXML Controller class
  *
  * @author brisatc171.minto - 20/11/2015
+ * https://github.com/lincolnminto/javaFXMDI
  */
 
 public class MyContentController implements Initializable {

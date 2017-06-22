@@ -38,6 +38,9 @@ import java.util.logging.Logger;
 
 /**
  * Created by brisatc171.minto on 12/11/2015.
+ * https://github.com/lincolnminto/javaFXMDI
+ *
+ * Angepasst von MHeiß, SWirries
  */
 
 public class MDIWindow extends BorderPane {
@@ -74,7 +77,9 @@ public class MDIWindow extends BorderPane {
     double lastX;
     private String windowsTitle;
 
-    //TODO Custom ADD
+    /**
+     * Für Game of KProg hinzugefügt
+     */
     private GameTypT gameTyp = GameTypT.None;
     private Object gameObject;
 
@@ -143,7 +148,9 @@ public class MDIWindow extends BorderPane {
         mdiContent = makeContentPane(content);
         this.setCenter(mdiContent);
 
-        // TODO changed by user
+        /**
+         * Für Game of KProg hinzugefügt
+         */
         this.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if(content.getClass().equals(Sokoban.class)){
                 Sokoban s = (Sokoban) content;
@@ -452,8 +459,9 @@ public class MDIWindow extends BorderPane {
             }
             isClosed.setValue(true);
         });
-        //TODO Custom Content
-
+        /**
+         * Für Game of KProg hinzugefügt
+         */
         try{
             if(GameTypT.GameOfLife == gameTyp){
                 if(gameObject !=null){

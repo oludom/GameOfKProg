@@ -8,6 +8,7 @@ package br.com.supremeforever.mdi.Exception;
 /**
  *
  * @author fai
+ * https://github.com/lincolnminto/javaFXMDI
  */
 public class PositionOutOfBoundsException extends RuntimeException {
     
