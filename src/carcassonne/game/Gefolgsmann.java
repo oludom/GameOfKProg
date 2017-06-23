@@ -9,6 +9,7 @@ import javafx.scene.image.*;
  * 07.05.2017
  *
  * @author SWirries
+ * Gefolgsleute (Spielsteine des Spiels)
  */
 public class Gefolgsmann {
     int id;
@@ -41,6 +42,9 @@ public class Gefolgsmann {
         init();
     }
 
+    /**
+     * Setzt das Bild des Gefolgsman
+     */
     private void init(){
         switch (farbe){
             case ROT:
@@ -61,14 +65,6 @@ public class Gefolgsmann {
         }
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public FarbeT getFarbe() {
-        return farbe;
-    }
-
     public Spieler getSpieler() {
         return spieler;
     }
@@ -77,6 +73,10 @@ public class Gefolgsmann {
         return rolle;
     }
 
+    /**
+     * Setz die Rolle des Spiels
+     * @param rolle
+     */
     public void setRolle(RolleT rolle) {
         this.rolle = rolle;
         if(rolle == RolleT.FREI){
@@ -96,6 +96,10 @@ public class Gefolgsmann {
         return absolutePosition;
     }
 
+    /**
+     * gibt das Bild mit Rotation zurück
+     * @return
+     */
     public Image getImage() {
         int rotationDegree = 0;
         ImageView imageView = new ImageView(image);
@@ -105,8 +109,6 @@ public class Gefolgsmann {
             rotationDegree = 0;
         }
         imageView.setRotate(rotationDegree);
-
-
         return makeTransparent(imageView.snapshot(new SnapshotParameters(),null));
     }
 
@@ -124,9 +126,13 @@ public class Gefolgsmann {
 
     public void setGebiet(Landschaftsteil gebiet) {
         this.gebiet = gebiet;
-//        gebiet.setBesetzer(this);
     }
 
+    /**
+     * Setzt den Hintergrund nach der ImageView transparent
+     * @param inputImage
+     * @return
+     */
     private Image makeTransparent(Image inputImage) {
         int W = (int) inputImage.getWidth();
         int H = (int) inputImage.getHeight();

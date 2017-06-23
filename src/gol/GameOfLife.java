@@ -20,10 +20,8 @@ import java.util.ArrayList;
 /**
  * 16.05.2017
  *
- * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
+ *
  */
 public class GameOfLife extends Pane {
 
@@ -350,7 +348,7 @@ public class GameOfLife extends Pane {
         fileChooser.setInitialFileName("GoL-Exported.txt");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Dateien (*.txt)", "*.txt"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Alle Dateien (*.*)", "*"));
-        //TODO Wenn möglich anpassen das ownerWindow das Programm ist
+
         File file = fileChooser.showSaveDialog(null);
         if(file != null){
             saveFile(file.getPath());
@@ -391,7 +389,6 @@ public class GameOfLife extends Pane {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Welt aus Datei laden");
-        //TODO Wenn möglich anpassen das ownerWindow das Programm ist
         File file = fileChooser.showOpenDialog(null);
         if(file != null){
             readFile(file.getPath());

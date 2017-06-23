@@ -22,7 +22,8 @@ import java.util.Observer;
 /**
  * 20.04.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
+ *
  */
 public class GraphView extends Pane implements Observer{
 

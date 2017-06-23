@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
  */
 public class Stadt {
 
@@ -27,42 +27,36 @@ public class Stadt {
        offeneStadtkanten.addAll(Arrays.asList(stadtteil.getOffeneKanten()));
     }
 
-    public void addStadteil(Stadtteil stadtteil, HimmelsrichtungT himmelsrichtungT){
+    public void addStadteil(Stadtteil stadtteil){
         stadtteile.add(stadtteil);
         offeneStadtkanten.addAll(Arrays.asList(stadtteil.getOffeneKanten()));
-//        switch (himmelsrichtungT){
-//            case WEST:
-//                offeneStadtkanten.remove(game.HimmelsrichtungT.WEST);
-//                offeneStadtkanten.remove(game.HimmelsrichtungT.OST);
-//                break;
-//            case OST:
-//                offeneStadtkanten.remove(game.HimmelsrichtungT.WEST);
-//                offeneStadtkanten.remove(game.HimmelsrichtungT.OST);
-//                break;
-//            case SUED:
-//                offeneStadtkanten.remove(game.HimmelsrichtungT.SUED);
-//                offeneStadtkanten.remove(game.HimmelsrichtungT.NORD);
-//                break;
-//            case NORD:
-//                offeneStadtkanten.remove(game.HimmelsrichtungT.SUED);
-//                offeneStadtkanten.remove(game.HimmelsrichtungT.NORD);
-//                break;
-//        }
 
         checkAbgeschlossen();
     }
 
+    /**
+     * Ersetzt alle Offenen Kanten
+     * @param himTnach
+     */
     public void replaceOffeneKanten(HimmelsrichtungT[] himTnach){
         offeneStadtkanten.clear();
         offeneStadtkanten.addAll(Arrays.asList(himTnach));
     }
 
+    /**
+     * Fügt die Städte beim Legen der L'Karte (connectStaedte)
+     * @param stadt
+     * @param himmelsrichtungT
+     */
     public void integrateStadt(Stadt stadt, HimmelsrichtungT himmelsrichtungT){
         stadtteile.addAll(stadt.getStadtteile());
         for(Stadtteil element : stadt.getStadtteile()){
                  element.setStadt(this);
         }
         offeneStadtkanten.addAll(stadt.getOffeneStadtkanten());
+        /**
+         * Entfernt offene Kanten um die Stadt abzuschließen
+         */
         switch (himmelsrichtungT){
             case WEST:
                 offeneStadtkanten.remove(HimmelsrichtungT.WEST);
@@ -81,11 +75,6 @@ public class Stadt {
                 offeneStadtkanten.remove(HimmelsrichtungT.SUED);
                 break;
         }
-//        for(game.HimmelsrichtungT t : offeneStadtkanten){
-//            System.out.println("Nach "+t);
-//        }
-//        System.out.println("Anzal 2: "+offeneStadtkanten.size());
-
         checkAbgeschlossen();
 
     }
@@ -104,6 +93,10 @@ public class Stadt {
         return stadtteile.size();
     }
 
+    /**
+     * Berechnet den Wert der Stadt
+     * @return
+     */
     public int getTotalWert(){
         int totalWert = 0;
         Set<Landschaftskarte> landschaftskarteSet = new HashSet<>();
@@ -120,6 +113,10 @@ public class Stadt {
         return totalWert;
     }
 
+    /**
+     * Prüft ob die Stadt besetzt ist
+     * @return
+     */
     public boolean isBesetzt() {
         if(!besetzt){
             for(Stadtteil s : stadtteile){
@@ -134,6 +131,9 @@ public class Stadt {
         return besetzt;
     }
 
+    /**
+     * Prüft ob die Stadt abgeschlossen ist, wenn ja bekommt der Spieler seine Punkte
+     */
     public void checkAbgeschlossen(){
 
         int nordCount = 0;
@@ -154,6 +154,9 @@ public class Stadt {
 
     }
 
+    /**
+     * Setzt dem Spieler seine Punkte
+     */
     public void setPlayerPoints(){
             HashMap<Spieler, Integer> gefolgsmannAnzahl = new HashMap<>();
             ArrayList<Gefolgsmann> besetzer = new ArrayList<>();

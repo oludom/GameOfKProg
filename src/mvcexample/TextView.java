@@ -10,10 +10,8 @@ import java.util.Observer;
 /**
  * 20.04.2017
  *
- * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
+ *
  *  View in Textform
  */
 public class TextView extends Pane implements Observer {

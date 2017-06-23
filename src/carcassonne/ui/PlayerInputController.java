@@ -11,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,7 +21,9 @@ import java.util.ResourceBundle;
 /**
  * 09.06.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
+ *
+ * Erstellt eine Dialog mit dem die Spieler festgelegt werden
  */
 public class PlayerInputController extends Stage implements Initializable{
     @FXML
@@ -46,7 +50,11 @@ public class PlayerInputController extends Stage implements Initializable{
     @FXML
     private Button buttonStart;
 
+    @FXML
+    private Button btnOpenAnleitung;
+
     private Carcassonne carcassonne;
+
 
     public PlayerInputController(Parent parent, Carcassonne carcassonne) {
         setTitle("Spieler festlegen");
@@ -61,17 +69,10 @@ public class PlayerInputController extends Stage implements Initializable{
         }
     }
 
-    //    @FXML
-//    void initialize() {
-//        assert textFieldPlayer1 != null : "fx:id=\"textFieldPlayer1\" was not injected: check your FXML file 'PlayerInput.fxml'.";
-//        assert textFieldPlayer2 != null : "fx:id=\"textFieldPlayer2\" was not injected: check your FXML file 'PlayerInput.fxml'.";
-//        assert textFieldPlayer3 != null : "fx:id=\"textFieldPlayer3\" was not injected: check your FXML file 'PlayerInput.fxml'.";
-//        assert textFieldPlayer4 != null : "fx:id=\"textFieldPlayer4\" was not injected: check your FXML file 'PlayerInput.fxml'.";
-//        assert textFieldPlayer5 != null : "fx:id=\"textFieldPlayer5\" was not injected: check your FXML file 'PlayerInput.fxml'.";
-//        assert buttonStart != null : "fx:id=\"buttonStart\" was not injected: check your FXML file 'PlayerInput.fxml'.";
-//
-//    }
-
+    /**
+     * Liest die Spielernamen aus den Textfeldern und gibt die Spieler an Carcassonne weiter
+     * @return
+     */
     private Spieler[] getAllPlayer(){
         ArrayList<Spieler> spieler = new ArrayList<>();
         if(!textFieldPlayer1.getText().equals("")) spieler.add(new Spieler(textFieldPlayer1.getText(), FarbeT.BLAU));
@@ -98,5 +99,8 @@ public class PlayerInputController extends Stage implements Initializable{
             carcassonne.setSpielers(getAllPlayer());
             this.close();
         });
+        btnOpenAnleitung.setOnAction(event -> carcassonne.getHostServices()
+                .showDocument("http://www.brettspiele-report.de/images/carcassonne/Spielanleitung_Carcassonne.pdf")
+        );
     }
 }

@@ -1,5 +1,6 @@
 package drehsafe;
 
+import br.com.supremeforever.mdi.MDIWindow;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -18,10 +19,8 @@ import javafx.util.Duration;
 /**
  * 30.03.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
  *
- *         This code is
- *         documentation enough
  */
 public class DrehSafe extends AnchorPane {
 
@@ -108,9 +107,14 @@ public class DrehSafe extends AnchorPane {
         if(state == 7){
             state = -1;
 
-            System.exit(0); //<- zu langweilig
+            close();
         }
 
+    }
+
+    private void close(){
+        MDIWindow window = (MDIWindow) this.getParent().getParent();
+        window.closeMdiWindow();
     }
 
     /***

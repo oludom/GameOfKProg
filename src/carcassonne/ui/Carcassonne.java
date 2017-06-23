@@ -2,6 +2,9 @@ package carcassonne.ui;
 
 import carcassonne.game.*;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -18,6 +21,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -25,7 +30,7 @@ import java.util.Optional;
 /**
  * @author Micha Heiß
  */
-public class Carcassonne extends AnchorPane{
+public class Carcassonne extends Application{
 
     private Canvas canvas;
     private Boolean canvasAllowUserInput = false;
@@ -45,12 +50,16 @@ public class Carcassonne extends AnchorPane{
     private double dragStartX = 0, dragStartY = 0;
     private int planWidth = 1000;
     private int planHeight = 1000;
+    private boolean closeApplication = false;
 
     private double originX = 0, originY = 0;
     Carcassonne me = this;
+    Stage stage;
 
+    @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Carcassonne");
+        stage = primaryStage;
         CanvasPane canvasPane = new CanvasPane(1920, 1080);
         canvas = canvasPane.getCanvas();
         c = canvas.getGraphicsContext2D();
@@ -59,9 +68,11 @@ public class Carcassonne extends AnchorPane{
         root.setBottom(playerStatusBar.getNode());
         Scene scene = new Scene(root, 1200,800);
         primaryStage.setScene(scene);
-//        scene.getStylesheets().add("css/styles.css");
+        scene.getStylesheets().add("carcassonne/css/styles.css");
 
         primaryStage.show();
+
+
 
 
         scene.widthProperty().addListener(new ChangeListener<Number>() {
@@ -74,7 +85,7 @@ public class Carcassonne extends AnchorPane{
                 render();
             }
         });
-
+        //Maximiert bei F11
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if(key.getCode()== KeyCode.F11) {
                 primaryStage.setFullScreen(true);
@@ -100,7 +111,9 @@ public class Carcassonne extends AnchorPane{
                 drawCardHover(e);
             }
         });
-
+        /**
+         * Verschiebt die Karten auf der Spielfeld um an einer Seite weiter bauen zu können
+         */
         canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -134,7 +147,10 @@ public class Carcassonne extends AnchorPane{
                 render();
             }
         });
-
+        /**
+         * Click Event
+         * entweder auf einen der CanvasButtons oder um eine Karte zu plazieren
+         */
         canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -159,13 +175,7 @@ public class Carcassonne extends AnchorPane{
                                 alertSurrender.setHeaderText("Möchten Sie das Spiel wirklich beenden?");
                                 Optional<ButtonType> resultSurrender = alertSurrender.showAndWait();
                                 if (resultSurrender.get() == ButtonType.OK){
-                                    machJetztSofortDieEndwertung();
-
-                                    // TODO winning message
-
-                                    WinningController winningController = new WinningController(new AnchorPane(), me, spielers);
-                                    winningController.showAndWait();
-
+                                    finishGame();
                                 }
                                 break;
                             case "ThrowCard":
@@ -186,7 +196,10 @@ public class Carcassonne extends AnchorPane{
                                     alertThrowCard.setHeaderText("Das Wegwerfen bei dieser Karte ist nicht möglich!");
                                     alertThrowCard.showAndWait();
                                 }
-
+                            case "Manual":{
+                                getHostServices()
+                                        .showDocument("http://www.brettspiele-report.de/images/carcassonne/Spielanleitung_Carcassonne.pdf");
+                            }
                         }
                         render();
                         break;
@@ -204,11 +217,14 @@ public class Carcassonne extends AnchorPane{
         originX = canvas.getWidth()/2;
         originY = canvas.getHeight()/2;
 
-
-        canvasButtons.add(new CanvasButton(500,20,60,60, "carcassonne/images/rotate-left.png", "Rotate Left", "Nach Links drehen"));
-        canvasButtons.add(new CanvasButton(700,20,60,60, "carcassonne/images/rotate-right.png", "Rotate Right", "Nach Rechts drehen"));
-        canvasButtons.add(new CanvasButton(200,20,60,60, "carcassonne/images/white-flag-symbol.png", "Surrender", "Spiel aufgeben"));
-        canvasButtons.add(new CanvasButton(300,20,60,60, "carcassonne/images/external-link-symbol.png", "ThrowCard", "Karte wegwerfen"));
+        /**
+         * Erzeugt die Steuerelemete des Spiels
+         */
+        canvasButtons.add(new CanvasButton(500,20,60,60, Stapel.rotateLeft, "Rotate Left"));
+        canvasButtons.add(new CanvasButton(700,20,60,60, Stapel.rotateRight, "Rotate Right"));
+        canvasButtons.add(new CanvasButton(100,20,60,60, Stapel.manual, "Manual"));
+        canvasButtons.add(new CanvasButton(200,20,60,60, Stapel.surrender, "Surrender"));
+        canvasButtons.add(new CanvasButton(300,20,60,60, Stapel.throwCard, "ThrowCard"));
 
         /**
          * Start Karte und erster Zug
@@ -221,14 +237,31 @@ public class Carcassonne extends AnchorPane{
         currentLKarte = stapel.drawLandschaftskarte();
 
         PlayerInputController playerInputController = new PlayerInputController(new AnchorPane(), this);
+        int countPlayerInput = 0;
 
-        do {
-            playerInputController.showAndWait();
-        } while (spielers == null);
+        while (spielers == null && !closeApplication){
+            if(countPlayerInput > 0 && !closeApplication){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Spiel beenden");
+                alert.setHeaderText("Möchten Sie das Spiel wirklich beenden?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    //System.exit(0);
+                    playerInputController.close();
+                    stage.close();
+                    closeApplication = true;
+                }
+            }
+            if(!closeApplication)playerInputController.showAndWait();
+            countPlayerInput++;
+        }
 
         render();
     }
 
+    /**
+     * Beendet das Spiel und berechnet die Punkte der noch plazierten Gefolgsleute
+     */
     private void machJetztSofortDieEndwertung() {
 
         gameFinished = true;
@@ -247,39 +280,46 @@ public class Carcassonne extends AnchorPane{
 
     }
 
+    /**
+     * Rendert das Spielfeld neu
+     */
     public void render(){
-        // canvas background
-        c.setFill(Color.WHEAT);
-        c.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            // canvas background
+            c.setFill(Color.WHEAT);
+            c.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        //draw landschaftskarten
-        for (Landschaftskarte lkarte : gelegteLandschaftskarten) {
-            c.drawImage(lkarte.getImage(), lkarte.getX() * lkarte.getWidth() + originX,
-                    lkarte.getY() * lkarte.getHeight() + originY);
-        }
+            //draw landschaftskarten
+            for (Landschaftskarte lkarte : gelegteLandschaftskarten) {
+                c.drawImage(lkarte.getImage(), lkarte.getX() * lkarte.getWidth() + originX,
+                        lkarte.getY() * lkarte.getHeight() + originY);
+            }
 
-        //draw Gefolgsmann
-        if(spielers != null) {
-            for (Spieler spieler : spielers) {
-                for (Gefolgsmann gefolgsmann : spieler.getAllGefolgsleute()) {
-                    if (gefolgsmann.getRolle() != RolleT.FREI && gefolgsmann.getAbsolutePosition() != null) {
-                        c.drawImage(gefolgsmann.getImage(), gefolgsmann.getAbsolutePosition().getX() + originX,
-                                gefolgsmann.getAbsolutePosition().getY() + originY, 25, 24);
+            //draw Gefolgsmann
+            if(spielers != null) {
+                for (Spieler spieler : spielers) {
+                    for (Gefolgsmann gefolgsmann : spieler.getAllGefolgsleute()) {
+                        if (gefolgsmann.getRolle() != RolleT.FREI && gefolgsmann.getAbsolutePosition() != null) {
+                            c.drawImage(gefolgsmann.getImage(), gefolgsmann.getAbsolutePosition().getX() + originX,
+                                    gefolgsmann.getAbsolutePosition().getY() + originY, 25, 24);
+                        }
+
                     }
-
                 }
             }
-        }
 
-        //draw canvas Buttons
-        for (CanvasButton cb : canvasButtons) {
-            c.drawImage(cb.getImage(), cb.getX(), cb.getY(), cb.getWidth(), cb.getHeight());
-        }
-        //draw currentKarte
-        c.drawImage(currentLKarte.getImage(), 600, 20, 60, 60);
+            //draw canvas Buttons
+            for (CanvasButton cb : canvasButtons) {
+                c.drawImage(cb.getImage(), cb.getX(), cb.getY(), cb.getWidth(), cb.getHeight());
+            }
+            //draw currentKarte
+            c.drawImage(currentLKarte.getImage(), 600, 20, 60, 60);
 
     }
 
+    /**
+     * Erzeugt einen Hover-Effekt am Rand der Karten
+     * @param e
+     */
     public void drawCardHover(MouseEvent e){
         Image rotatedImage = currentLKarte.getImage();
         canvasAllowUserInput = false;
@@ -288,8 +328,11 @@ public class Carcassonne extends AnchorPane{
             double x = e.getSceneX()-originX, y = e.getSceneY()-originY;
 
             double lx = landschaftskarte.getX()*landschaftskarte.getWidth(), ly = landschaftskarte.getY()*landschaftskarte.getHeight(),
-                    lw = landschaftskarte.getWidth(), lh = landschaftskarte.getHeight();
+                lw = landschaftskarte.getWidth(), lh = landschaftskarte.getHeight();
 
+            /**
+             * Prüft ob die Karte dort angezeigt werden kann
+             */
             if (x > (lx - lw) && x < (lx + 2 * lw) && y > (ly - lh) && y < (ly + 2 * lh)) {
 
                 boolean showKard = false;
@@ -332,10 +375,25 @@ public class Carcassonne extends AnchorPane{
         }
     }
 
+    /**
+     * Prüft ob x und y in einem Rechteck aus sx,sy, w und h sind
+     * @param x
+     * @param y
+     * @param sx
+     * @param sy
+     * @param w
+     * @param h
+     * @return
+     */
     private boolean squareContains(double x, double y, double sx, double sy, double w, double h){
         return x>sx && x<(sx+w) && y>sy && y<(sy+h);
     }
 
+    /**
+     * Prüft ob die Karte gelegt werden kann
+     * Plaziert die Karte auf dem Spielfeld (CanvasPane)
+     * Ziegt einen neue Karte und der nächste Spieler ist an der Reihe
+     */
     private void placeLKarte(){
         Landschaftskarte nordKarte = null;
         Landschaftskarte ostKarte = null;
@@ -347,6 +405,9 @@ public class Carcassonne extends AnchorPane{
         boolean bSued = true;
         boolean bWest = true;
 
+        /**
+         * Sammelt mögliche Nachbar-Karten
+         */
         for(Landschaftskarte landschaftskarte : gelegteLandschaftskarten){
             if(landschaftskarte.getX() == currentLKartX && landschaftskarte.getY() == currentLKartY-1)
                 nordKarte = landschaftskarte;
@@ -357,12 +418,13 @@ public class Carcassonne extends AnchorPane{
             if(landschaftskarte.getX() == currentLKartX-1 && landschaftskarte.getY() == currentLKartY)
                 westKarte = landschaftskarte;
         }
+        //Prüft ob Karte gelegt werden kann
         if(nordKarte != null) bNord = currentLKarte.addNeighbor(nordKarte, HimmelsrichtungT.NORD, false);
         if(ostKarte != null) bOst = currentLKarte.addNeighbor(ostKarte, HimmelsrichtungT.OST, false);
         if(suedKarte != null) bSued = currentLKarte.addNeighbor(suedKarte, HimmelsrichtungT.SUED, false);
         if(westKarte != null) bWest = currentLKarte.addNeighbor(westKarte, HimmelsrichtungT.WEST, false);
 
-        if(bNord && bOst && bSued && bWest){
+        if(bNord && bOst && bSued && bWest){ //Wenn ja
             currentLKarte.setX(currentLKartX);
             currentLKarte.setY(currentLKartY);
             gelegteLandschaftskarten.add(currentLKarte);
@@ -372,8 +434,7 @@ public class Carcassonne extends AnchorPane{
             if(suedKarte != null) currentLKarte.addNeighbor(suedKarte, HimmelsrichtungT.SUED, true);
             if(westKarte != null) currentLKarte.addNeighbor(westKarte, HimmelsrichtungT.WEST, true);
 
-            //Kloster
-
+            //Erhöht den FillField Count wenn Kloster vorhanden
             for(Landschaftskarte landschaftskarte : gelegteLandschaftskarten){
                 //oben links
                 if(landschaftskarte.getX() == currentLKarte.getX() -1 && landschaftskarte.getY() == currentLKarte.getY()-1){
@@ -416,20 +477,25 @@ public class Carcassonne extends AnchorPane{
                     if(landschaftskarte.hasKloster()) landschaftskarte.getKloster().addFillFreeField();
                 }
             }
-
-
+            //Ermögliche dem Spieler eine Gefolgsmann zusetzen, wenn dieser noch Frei besitzt
             if(currentSpieler.countFreieGefolgsleute() != 0){
                 currentLKarte.setGefolgsmann(currentSpieler.getFreienGeflogsmann());
             }
             //Neue Karte zeihen
             currentLKarte = stapel.drawLandschaftskarte();
+            if(currentLKarte == null){
+                finishGame();
+                return;
+            }
             //nächster Spieler
             int spielerIndex = (++currentSpielerIndex)%spielers.length;
 
             currentSpieler = spielers[spielerIndex];
             currentSpielerIndex = spielerIndex;
+            //Aktuallisiert die Anzige
             playerStatusBar.setPlayer(spielers, currentSpielerIndex);
         }else {
+            //Wenn nicht gelegt werden kann
             currentLKarte.getInformation();
             System.out.println(bNord + " " + bOst + " "+ bSued + " " +bWest);
             if(nordKarte != null){
@@ -454,10 +520,25 @@ public class Carcassonne extends AnchorPane{
 
     }
 
+    /**
+     * Setzt die Spieler des Spiels
+     * @param spielers
+     */
     public void setSpielers(Spieler[] spielers) {
         this.spielers = spielers;
         currentSpieler = spielers[0];
         currentSpielerIndex = 0;
         playerStatusBar.setPlayer(spielers, currentSpielerIndex);
+    }
+
+    public void finishGame(){
+        machJetztSofortDieEndwertung();
+
+        WinningController winningController = new WinningController(new AnchorPane(), me, spielers);
+        winningController.showAndWait();
+    }
+
+    public void setCloseApplication(boolean closeApplication) {
+        this.closeApplication = closeApplication;
     }
 }

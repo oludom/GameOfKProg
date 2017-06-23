@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
+ *
  */
 public class Sokoban extends AnchorPane{
 

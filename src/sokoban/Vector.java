@@ -3,7 +3,8 @@ package sokoban;
 import java.io.Serializable;
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
+ *
  */
 public class Vector implements Serializable{
 

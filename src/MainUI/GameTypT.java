@@ -3,7 +3,10 @@ package MainUI;
 /**
  * 11.05.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
+ *
+ * Auflistung aller Spiele in dem Programm
+ *
  */
 public enum GameTypT {
     SiebenSpaltenPrimzahlen,

@@ -15,7 +15,8 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
+ *
  */
 public class CustomDialog extends Application {
 

@@ -9,7 +9,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
+ *
  */
 public class Level implements Serializable {
 

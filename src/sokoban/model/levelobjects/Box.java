@@ -6,7 +6,8 @@ import sokoban.Vector;
 import java.io.Serializable;
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
+ *
  */
 public class Box implements LevelObject, Serializable {
 

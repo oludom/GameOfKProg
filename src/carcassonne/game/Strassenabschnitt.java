@@ -1,11 +1,9 @@
 package carcassonne.game;
 
-import java.awt.*;
-
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
  */
 public class Strassenabschnitt extends Landschaftsteil {
     private HimmelsrichtungT startRichtung;
@@ -38,6 +36,10 @@ public class Strassenabschnitt extends Landschaftsteil {
         this.strasse = strasse;
     }
 
+    /**
+     * Rotiert die Straßenabschnitte
+     * @param direction
+     */
     public void rotate(boolean direction){
         startRichtung = direction ? startRichtung.next() : startRichtung.prev();
         endRichtung = direction ? endRichtung.next() : endRichtung.prev();

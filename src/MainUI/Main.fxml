@@ -17,27 +17,13 @@
             <MenuItem fx:id="gameoflife" mnemonicParsing="false" text="GameOfLife" />
             <MenuItem fx:id="connect6" mnemonicParsing="false" text="Connect6" />
             <MenuItem fx:id="snake" mnemonicParsing="false" text="Snake" />
-                  <MenuItem fx:id="carcassonne" mnemonicParsing="false" text="Carcassonne" />
+                  <MenuItem fx:id="carcassonne" mnemonicParsing="false" text="Carcassonne (extern)" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="mvcexample" mnemonicParsing="false" text="MVCexample" />
             <MenuItem fx:id="regenbogen" mnemonicParsing="false" text="Regenbogen" />
             <MenuItem fx:id="drehsafe" mnemonicParsing="false" text="DrehSafe" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="siebenspaltenprimzahlen" mnemonicParsing="false" text="SiebenSpaltenPrimzahlen" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

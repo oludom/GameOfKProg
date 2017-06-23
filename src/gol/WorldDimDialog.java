@@ -13,10 +13,8 @@ import java.util.Optional;
 /**
  * 16.05.2017
  *  Dialog um die Größe der Welt abzufragen
- * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
+ *
  */
 public class WorldDimDialog {
     int heightValue;

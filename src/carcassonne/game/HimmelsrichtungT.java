@@ -3,7 +3,8 @@ package carcassonne.game;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author MHeiß SWirries
+ * Ausrichtung/Position der Straßen und Städte
  */
 public enum HimmelsrichtungT {
     NORD,
@@ -12,6 +13,10 @@ public enum HimmelsrichtungT {
     WEST,
     STOP;
 
+    /**
+     * Rotation mit dem Uhrzeigersinn
+     * @return
+     */
     public HimmelsrichtungT next(){
         HimmelsrichtungT himmelsrichtungT = this;
         if(himmelsrichtungT != STOP){
@@ -23,6 +28,10 @@ public enum HimmelsrichtungT {
         return himmelsrichtungT;
     }
 
+    /**
+     * Rotation gegen den Uhrzeigersinn
+     * @return
+     */
     public HimmelsrichtungT prev(){
         HimmelsrichtungT himmelsrichtungT = this;
         if(himmelsrichtungT != STOP){

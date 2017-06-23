@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
  */
 public class Strasse {
 
@@ -25,6 +25,10 @@ public class Strasse {
         strassenabschnitte.add(strassenabschnitt);
     }
 
+    /**
+     * Fügt eine Strassenabschnitt der Straße hinzu
+     * @param strassenabschnitt
+     */
     public void addStrassenabschnitt(Strassenabschnitt strassenabschnitt){
         strassenabschnitte.add(strassenabschnitt);
         checkAbgeschlossen();
@@ -44,6 +48,10 @@ public class Strasse {
         return strassenabschnitte.size();
     }
 
+    /**
+     * Berechnet den Wert der Straße
+     * @return
+     */
     public int getTotalWert(){
         int totalWert = 0;
         Set<Landschaftskarte> landschaftskarteSet = new HashSet<>();
@@ -56,6 +64,10 @@ public class Strasse {
         return totalWert;
     }
 
+    /**
+     * Prüft ob die Straße besetzt ist
+     * @return
+     */
     public boolean isBesetzt() {
         if(!besetzt){
             for(Strassenabschnitt s: strassenabschnitte){
@@ -69,6 +81,9 @@ public class Strasse {
         return besetzt;
     }
 
+    /**
+     * Prüft ob die Straße abgschlossen ist
+     */
     public void checkAbgeschlossen(){
         int stopCount = 0;
         for(Strassenabschnitt str : strassenabschnitte){
@@ -83,6 +98,9 @@ public class Strasse {
 
     }
 
+    /**
+     * Gibt die Spieler die Punkte für die Straße
+     */
     public void setPlayerPoints(){
             HashMap<Spieler, Integer> gefolgsmannAnzahl = new HashMap<>();
             ArrayList<Gefolgsmann> besetzer = new ArrayList<>();

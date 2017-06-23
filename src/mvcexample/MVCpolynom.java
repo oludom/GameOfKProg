@@ -14,10 +14,8 @@ import javafx.stage.Stage;
 /**
  * 11.05.2017
  *
- * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
+ *
  */
 public class MVCpolynom extends AnchorPane {
 

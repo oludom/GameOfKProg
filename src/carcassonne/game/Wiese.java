@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
  */
 public class Wiese {
 
@@ -48,6 +48,10 @@ public class Wiese {
         return wiesenstuecke.size();
     }
 
+    /**
+     * Prüft ob die Wiese bestzt ist
+     * @return
+     */
     public boolean isBesetzt() {
         if(!besetzt){
             for(Wiesenstueck w : wiesenstuecke){
@@ -62,6 +66,10 @@ public class Wiese {
         return besetzt;
     }
 
+    /**
+     * Berechnet den Wert der Wiese anhande der abgeschlossenen Städte
+     * @return
+     */
     public int getTotalWert(){
         int totalWert = 0;
         Set<Stadt> staete = new HashSet<>();
@@ -83,6 +91,9 @@ public class Wiese {
         return wiesenstuecke;
     }
 
+    /**
+     * Gibt die Spiel die Punkte für die Wiese
+     */
     public void setPlayerPoints(){
         /**
          * in der Endwertung aufrufen

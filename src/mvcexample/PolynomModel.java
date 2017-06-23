@@ -6,12 +6,9 @@ import java.util.Observable;
 /**
  * 20.04.2017
  *
- * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
  *
- * Modell des Poloynoms
+ * Modell des Polynoms
  */
 public class PolynomModel extends Observable {
 

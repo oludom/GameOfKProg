@@ -3,7 +3,7 @@ package carcassonne.game;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
  */
 public class Stadtteil extends Landschaftsteil {
     boolean wappen = false;
@@ -16,6 +16,10 @@ public class Stadtteil extends Landschaftsteil {
         stadt = new Stadt(this);
     }
 
+    /**
+     * Gibt der Wert des Stadtteils zurück
+     * @return
+     */
     @Override
     public int getWert() {
         if(wappen){
@@ -36,6 +40,10 @@ public class Stadtteil extends Landschaftsteil {
         return offeneKanten;
     }
 
+    /**
+     * Rotiert alle Katen des Stadtteils
+     * @param direction
+     */
     public void rotate(boolean direction){
         for(int i = 0; i<offeneKanten.length;i++){
             offeneKanten[i] = direction ? offeneKanten[i].next() : offeneKanten[i].prev();

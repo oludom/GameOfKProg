@@ -9,10 +9,7 @@ import javafx.scene.layout.StackPane;
 /**
  * 20.04.2017
  *
- * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
  *
  * Customclass für ein UI Element mit Rahmen und Beschriftung
  */

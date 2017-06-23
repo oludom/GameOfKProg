@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
  */
 public class Spieler {
     String name;

@@ -23,7 +23,9 @@ import java.util.ResourceBundle;
 /**
  * 12.06.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
+ *
+ * Anzeige der Speiler, Punkte und freien Gefolgsleute in der UI
  */
 public class PlayerStatusBar implements Initializable {
 
@@ -57,7 +59,6 @@ public class PlayerStatusBar implements Initializable {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/carcassonne/ui/PlayerStatusBar.fxml"));
         fxmlLoader.setController(this);
-//        fxmlLoader.setRoot(parent);
         try {
            node = fxmlLoader.load();
         } catch (IOException e) {
@@ -79,6 +80,11 @@ public class PlayerStatusBar implements Initializable {
         pictureGefolgsmann.setImage(spieler.getImage());
     }
 
+    /**
+     * Veränder die Ansicht entsprechen des aktuellen Spielers
+     * @param spielers
+     * @param spielerindex
+     */
     public void setPlayer(Spieler[] spielers, int spielerindex){
         playerName.setText(spielers[spielerindex].getName());
         playerPoints.setText(""+spielers[spielerindex].getPunkte());
@@ -89,7 +95,7 @@ public class PlayerStatusBar implements Initializable {
             spielerindex = ++spielerindex%spielers.length;
             playerNameA.setText(spielers[spielerindex].getName() + " Punkte: "+
                             spielers[spielerindex].getPunkte());
-        }
+        }else playerNameA.setText("");
         if(spielers.length >= 3) {
             spielerindex = ++spielerindex%spielers.length;
             playerNameB.setText(spielers[spielerindex].getName() + " Punkte: "+
@@ -105,7 +111,6 @@ public class PlayerStatusBar implements Initializable {
             playerNameD.setText(spielers[spielerindex].getName() + " Punkte: "+
                     spielers[spielerindex].getPunkte());
         }
-
         else playerNameD.setText("");
     }
 

@@ -9,7 +9,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 /**
- * @author SWirries
+ * @author SWirries MHeiß
+ *
  * UI der Siebenspaltenprimezahl
  */
 public class SiebenSpaltenPrimezahl extends AnchorPane{
@@ -39,6 +40,7 @@ public class SiebenSpaltenPrimezahl extends AnchorPane{
 		ListView listView = new ListView();
 		listView.setItems(primeList);
 		anchorPane.getChildren().add(listView);
+
 		Primer[] aPrimer = new Primer[7];
 		for(int k = 0;k < aPrimer.length; k++){
 

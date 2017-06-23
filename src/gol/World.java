@@ -7,10 +7,8 @@ import static java.lang.Thread.sleep;
 /**
  * 27.04.2017
  *
- * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
+ *
  */
 
 /**

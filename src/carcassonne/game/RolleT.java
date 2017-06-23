@@ -3,7 +3,9 @@ package carcassonne.game;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author  MHeiß
+ *
+ * Rollen des Gefolgsmanns im Spiel
  */
 public enum  RolleT {
     RITTER,

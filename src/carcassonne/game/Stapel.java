@@ -7,11 +7,15 @@ import java.util.Random;
 /**
  * 02.06.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
+ *
+ * Enthält die Bilder aus dem Spiel
+ * Erzeugt eine Stapel vondem der Spieler eine Karte ziehen kann.
+ *
  */
 public class Stapel {
     ArrayList<Landschaftskarte> landschaftskarten = new ArrayList<>();
-    private static final String imagePath = "carcassonne/images/";
+    public static final String imagePath = "carcassonne/images/";
     public static final Image imageA = new Image(imagePath+"A.png");
     public static final Image imageB = new Image(imagePath +"B.png");
     public static final Image imageC = new Image(imagePath +"C.png");
@@ -49,6 +53,12 @@ public class Stapel {
     public static final Image mannRotHR = new Image(imagePath +"Mann_Rot_x150.PNG");
     public static final Image mannSchwarzHR = new Image(imagePath +"Mann_Schwarz_x150.PNG");
 
+    public static final Image rotateRight = new Image(imagePath + "rotate-right.png");
+    public static final Image rotateLeft = new Image(imagePath + "rotate-left.png");
+    public static final Image surrender = new Image(imagePath + "white-flag-symbol.png");
+    public static final Image throwCard = new Image(imagePath + "external-link-symbol.png");
+    public static final Image manual = new Image(imagePath + "book.png");
+
     public Stapel() {
         generateStapel();
     }
@@ -57,17 +67,28 @@ public class Stapel {
         return generateLandschaftD();
     }
 
+    /**
+     * Zieht zufälig eine Karte aus dem Stapel
+     * @return
+     */
     public Landschaftskarte drawLandschaftskarte(){
-        int size = landschaftskarten.size();
-        Random random = new Random();
+        try {
+            int size = landschaftskarten.size();
+            Random random = new Random();
 
-        int randomInt = random.nextInt(size);
-        Landschaftskarte drawedKard = landschaftskarten.get(randomInt);
-        landschaftskarten.remove(drawedKard);
+            int randomInt = random.nextInt(size);
+            Landschaftskarte drawedKard = landschaftskarten.get(randomInt);
+            landschaftskarten.remove(drawedKard);
 
-        return  drawedKard;
+            return  drawedKard;
+        } catch (Exception e) {
+        }
+        return null;
     }
 
+    /**
+     * Erzeugt den Stapel mit allen 71 Karten
+     */
     private void generateStapel(){
         landschaftskarten.add(generateLandschaftA());
         landschaftskarten.add(generateLandschaftA());
@@ -152,6 +173,11 @@ public class Stapel {
         landschaftskarten.add(generateLandschaftX());
 
     }
+
+    /**
+     * Erzuegt die Landschaftskartn nach Vorgabe der Spielanleitung
+     * @return
+     */
 
     public Landschaftskarte generateLandschaftA(){
         Kloster kloster = new Kloster();

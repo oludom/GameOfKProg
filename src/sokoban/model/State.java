@@ -5,7 +5,8 @@ import sokoban.model.levelobjects.LevelObject;
 import java.io.Serializable;
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
+ *
  */
 public class State implements Serializable{
 

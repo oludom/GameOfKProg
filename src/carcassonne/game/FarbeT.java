@@ -3,7 +3,8 @@ package carcassonne.game;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author SWirries MHeiß
+ * Farbe der Spieler
  */
 public enum FarbeT {
     BLAU("036BB6"),

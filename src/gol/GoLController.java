@@ -14,10 +14,8 @@ import java.util.ResourceBundle;
 /**
  * 16.05.2017
  * Controller für die Steuertung der UI Elemente aus der gameoflife.fxml
- * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
+ *
  */
 public class GoLController implements Initializable {
 

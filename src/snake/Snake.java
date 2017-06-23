@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
  *
  * Code source (JavaScript, siehe Kommentare): https://www.youtube.com/watch?v=xGmXxpIj6vs
  *
@@ -49,9 +49,6 @@ public class Snake extends AnchorPane{
         AnchorPane.setLeftAnchor(canvasPane, 0d);
         AnchorPane.setTopAnchor(canvasPane, 0d);
         AnchorPane.setRightAnchor(canvasPane, 0d);
-
-
-
 //                setInterval(game,1000/10);
         new Thread(){
             public void run(){
@@ -65,12 +62,8 @@ public class Snake extends AnchorPane{
                     update();
                     render();
                 }
-                System.out.println("Snake Thread close");
             }
         }.start();
-
-
-
 //                px=py=10;
         // player/snake position
         px = 10;
@@ -93,11 +86,8 @@ public class Snake extends AnchorPane{
         trail = new ArrayList<>();
 //                tail = 5;
         tail = 5;
-
-
 //                document.addEventListener("keydown",keyPush);
         registerKeyPush();
-
     }
 
     /**
@@ -119,12 +109,8 @@ public class Snake extends AnchorPane{
             width = canvas.getWidth();
             height = canvas.getHeight();
         }
-
-
         gsw = (int)width/(tc);
         gsh = (int)height/(tc+1);
-
-
 
 //                    ctx.fillStyle="black";
         c.setFill(Color.BLACK);

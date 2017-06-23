@@ -44,6 +44,7 @@ public class Main extends Application {
         primaryStage.setTitle("Game Box");
         Main.primaryStage = primaryStage;
 
+        //Laden der UI
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/MainUI/Main.fxml"));
         Node node = fxmlLoader.load();
         root.getChildren().add(node);
@@ -70,6 +71,11 @@ public class Main extends Application {
         return scene;
     }
 
+    /**
+     * Auswahl der Spiele über die Menues
+     * @param gameTypT
+     * @param gameValue
+     */
     public static void addContent(GameTypT gameTypT, Object gameValue){
         Node content = null;
         MDIWindow mdiWindow;

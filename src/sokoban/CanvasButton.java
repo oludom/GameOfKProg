@@ -3,7 +3,8 @@ package sokoban;
 import javafx.scene.image.Image;
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
+ *
  */
 public class CanvasButton {
 

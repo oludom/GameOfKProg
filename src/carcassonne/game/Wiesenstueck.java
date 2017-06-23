@@ -3,7 +3,8 @@ package carcassonne.game;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author SWirries MHieß
+ *
  */
 public class Wiesenstueck extends Landschaftsteil {
     HalbKantenT[] offeneHalbKanten;
@@ -32,6 +33,10 @@ public class Wiesenstueck extends Landschaftsteil {
         return offeneHalbKanten;
     }
 
+    /**
+     * Rotiert alle Kante des Wiesenstücks
+     * @param direction
+     */
     public void rotate(boolean direction){
         for(int i = 0; i<offeneHalbKanten.length;i++){
             offeneHalbKanten[i] = direction ? offeneHalbKanten[i].next() : offeneHalbKanten[i].prev();
@@ -45,6 +50,9 @@ public class Wiesenstueck extends Landschaftsteil {
         besetzer.setAusrichtung(AusrichtungT.LIEGEND);
     }
 
+    /**
+     * Berechnte die Punkte der Wiese und schreibt sie dem Spieler gut
+     */
     @Override
     public void sammlePoints() {
         wiese.setPlayerPoints();

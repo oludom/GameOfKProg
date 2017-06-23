@@ -4,7 +4,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 
 /**
- * @author Micha Heiß
+ * @author MHeiß SWirries
+ * Stellt den Spielplan im Spiel da, auf dem die Karten gelegt und die CanvasButtons erzugt werden
  */
 class CanvasPane extends Pane {
 
@@ -19,6 +20,9 @@ class CanvasPane extends Pane {
         return canvas;
     }
 
+    /**
+     * Sorgt für das Ausfüllen des Parentelements
+     */
     @Override
     protected void layoutChildren() {
         final double x = snappedLeftInset();

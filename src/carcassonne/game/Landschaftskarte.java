@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author MHeiß SWirries
  */
 public class Landschaftskarte {
     private Wiesenstueck[] wiestenstuecke = null;
@@ -91,6 +91,13 @@ public class Landschaftskarte {
         return kloster != null;
     }
 
+    /**
+     * Fügt der Karte eine Nachbarkart an der übergebenen Position
+     * @param landschaftskarte
+     * @param himmelsrichtungT
+     * @param connect
+     * @return
+     */
     public boolean addNeighbor(Landschaftskarte landschaftskarte, HimmelsrichtungT himmelsrichtungT, boolean connect){
 
         /**
@@ -98,22 +105,30 @@ public class Landschaftskarte {
          * ich füge mir einen Nachbarn hinzu der in Himmelsrichtung-lich liegt
          */
         switch (himmelsrichtungT){
-            case NORD: //nördlich ich bin für ihn suedlich
+            case NORD:
                 return addNordSuedNeighbor(landschaftskarte,this, HimmelsrichtungT.NORD, connect);
 
-            case OST: //oestlich ich bin für ihn westlich
+            case OST:
                 return addOstWestNeighbor(landschaftskarte,this, HimmelsrichtungT.OST, connect);
 
-            case SUED://suedlich ich bin für ihn noerdlich
+            case SUED:
                 return addNordSuedNeighbor(this,landschaftskarte, HimmelsrichtungT.SUED, connect);
 
-            case WEST: //Westlich ich bin für ihn oestlich
+            case WEST:
                 return addOstWestNeighbor(this,landschaftskarte, HimmelsrichtungT.WEST, connect);
 
         }
         return false;
     }
 
+    /**
+     * Fügt die Karten horizontal zusammen  (Norden/Süden)
+     * @param landNord
+     * @param landSued
+     * @param himmelsrichtungT
+     * @param connect
+     * @return
+     */
     private boolean addNordSuedNeighbor(Landschaftskarte landNord, Landschaftskarte landSued, HimmelsrichtungT himmelsrichtungT, boolean connect){
 
         boolean wiesenOk = false;
@@ -133,6 +148,9 @@ public class Landschaftskarte {
         Strassenabschnitt[] abschnitteSued = landSued.getStrassenabschnitte();
         Stadtteil[] teileSued = landSued.getStadtteile();
 
+        /**
+         * Überprüft die Wiesenstücke
+         */
         if(stueckeNord != null || stueckeSued != null){
             boolean bNordWest = false;
             Wiesenstueck wsNordWest = null;
@@ -143,6 +161,7 @@ public class Landschaftskarte {
             boolean bSuedOst = false;
             Wiesenstueck wsSuedOst= null;
             if(stueckeNord != null) {
+                //Prüft ob in der Nördlichen südliche Wiesenstücke vorhanden sind
                 for(Wiesenstueck wsNord : stueckeNord){
                     if(!bSuedWest){
                         bSuedWest = Arrays.asList(wsNord.getOffeneHalbKanten()).indexOf(HalbKantenT.SuedWest) >= 0;
@@ -156,6 +175,7 @@ public class Landschaftskarte {
                 }
             }
             if(stueckeSued != null) {
+                //Prüft ob in der Südlichen nördliche Wiesnstücke vorhanden sind
                 for(Wiesenstueck wsSued : stueckeSued){
                     if(!bNordWest) {
                         bNordWest = Arrays.asList(wsSued.getOffeneHalbKanten()).indexOf(HalbKantenT.NordWest) >= 0;
@@ -168,16 +188,22 @@ public class Landschaftskarte {
                     }
                 }
             }
+            /**
+             * Wenn an den überprüften stellen sich Wiesenstücke gegenüberliegen
+             */
             if(bNordOst == bSuedOst && bNordWest == bSuedWest){
                 wiesenOk = true;
                 try {
                     //Es können NullPointer aufteten wenn die Karten keine Wiesen an den Positionen haben.
+                    //Wenn die geprüfeten Ausrichtungen zu einer Wiese gehören
                     if(wsSuedOst.equals(wsSuedWest) || wsNordOst.equals(wsNordWest)) {
+                        //alle in ein Set speichern
                         wiesenstueckSet1.add(wsSuedOst);
                         wiesenstueckSet1.add(wsSuedWest);
                         wiesenstueckSet1.add(wsNordOst);
                         wiesenstueckSet1.add(wsNordWest);
                     }else {
+                        //sonst nur die sichberührenden Stücke
                         wiesenstueckSet1.add(wsSuedOst);
                         wiesenstueckSet2.add(wsSuedWest);
                         wiesenstueckSet1.add(wsNordOst);
@@ -186,13 +212,12 @@ public class Landschaftskarte {
                 } catch (Exception e) {
                 }
             }
-//            else System.out.println("SW"+bSuedWest+" SO"+bSuedOst);
-
         }else{
-//            System.out.println("Wiesen NULL");
             wiesenOk = true;
         }
-
+        /**
+         * Überprüfung der Straßenabschnitte
+         */
         if(abschnitteNord != null || abschnitteSued != null){
             boolean bNord = false;
             boolean bSued = false;
@@ -215,14 +240,14 @@ public class Landschaftskarte {
 
             if(bNord == bSued){
                 stassenOk =true;
-//                System.out.println("Straßen passen!");
             }
-//            else System.out.println("N"+bNord + " S"+ bSued);
         }else{
             stassenOk = true;
-//            System.out.println("Straße NULL");
         }
 
+        /**
+         * Überprüfen der Stadtteile
+         */
         if(teileNord != null || teileSued != null){
             boolean bNord = false;
             boolean bSued = false;
@@ -244,15 +269,16 @@ public class Landschaftskarte {
             }
             if(bNord == bSued){
                 stadtOk = true;
-//                        System.out.println("Städte passen!");
             }
-//                    else System.out.println("N"+bNord + " S"+ bSued);
         }else {
             stadtOk = true;
         }
 
+        /**
+         * Wenn alle Überprüfungen erfolgreich waren bzw. die Landschaftsteile nicht vorkamen
+         */
         if (wiesenOk && stadtOk && stassenOk){
-//            System.out.println("Karte kann gelegt werden!");
+            //Werden nur zusammen gefügt wenn connect = true
             if (connect){
                 if(stueckeNord != null && stueckeSued != null){
                     connectWiesen(new ArrayList<>(wiesenstueckSet1));
@@ -263,12 +289,20 @@ public class Landschaftskarte {
             }
             return true;
         }else{
-            System.out.println("Karte kann NICHT gelegt werden! W:" + wiesenOk + " Sdt:" + stadtOk + " Str:"+stassenOk);
             return false;
         }
 
     }
 
+
+    /**
+     * Fügt die Karten vertikal zusammen (West/Ost)
+     * @param landOst
+     * @param landWest
+     * @param himmelsrichtungT
+     * @param connect
+     * @return
+     */
     private boolean addOstWestNeighbor(Landschaftskarte landOst, Landschaftskarte landWest, HimmelsrichtungT himmelsrichtungT, boolean connect){
 
         boolean wiesenOk = false;
@@ -289,6 +323,9 @@ public class Landschaftskarte {
         Strassenabschnitt[] abschnitteWest = landWest.getStrassenabschnitte();
         Stadtteil[] teileWest = landWest.getStadtteile();
 
+        /**
+         * Überprüfung der Wiesen
+         */
         if(stueckOst != null || stueckWest != null){
             boolean bOstNord = false;
             Wiesenstueck wsOstNord = null;
@@ -341,13 +378,13 @@ public class Landschaftskarte {
                 }
 
             }
-//            else System.out.println("SW"+bOstSued+" SO"+bOstSued);
-
         }else{
-//            System.out.println("Wiesen NULL");
             wiesenOk = true;
         }
 
+        /**
+         * Überprüfung der Straßen
+         */
         if(abschnitteOst != null || abschnitteWest != null){
             boolean bOst = false;
             boolean bWest = false;
@@ -369,15 +406,14 @@ public class Landschaftskarte {
             }
             if(bOst == bWest){
                 stassenOk =true;
-//                        System.out.println("Straßen passen!");
             }
-//                    else System.out.println("N"+bNord + " S"+ bSued);
         }else{
             stassenOk = true;
-//            System.out.println("Straße NULL");
         }
 
-//        System.out.println(teileOst.length  + " " + teileWest.length);
+        /**
+         * Überprüfung der Stadtteile
+         */
         if(teileOst != null || teileWest != null){
             boolean bOst = false;
             boolean bWest = false;
@@ -399,14 +435,13 @@ public class Landschaftskarte {
             }
             if(bOst == bWest){
                 stadtOk =true;
-//                        System.out.println("Städte passen!");
             }else System.out.println("O"+bOst + " S"+ bWest);
         }else {
             stadtOk = true;
         }
 
         if (wiesenOk && stadtOk && stassenOk){
-//            System.out.println("Karte kann gelegt werden!");
+            //Werden nur zusammen gefügt wenn connect = true
             if(connect){
                 if (stueckOst != null && stueckWest != null){
                     connectWiesen(new ArrayList<>(wiesenstueckSet1));
@@ -417,12 +452,16 @@ public class Landschaftskarte {
             }
             return true;
         }else{
-            System.out.println("Karte kann NICHT gelegt werden! W:" + wiesenOk + " Sdt:" + stadtOk + " Str:"+stassenOk);
             return false;
         }
 
     }
 
+    /**
+     * Verbindet alle Wiesenstücke / Wiesen miteinander
+     * Die kleine Wiesen werden zur Größten hinzugefügt
+     * @param wsList
+     */
     private void connectWiesen(ArrayList<Wiesenstueck> wsList){
         Wiese mainWiese = new Wiese();
 
@@ -431,7 +470,6 @@ public class Landschaftskarte {
                 mainWiese = ws.getWiese();
             }
         }
-//        System.out.println("Main Vor:"+mainWiese.getAnzahlWiesenstuecke());
         for(Wiesenstueck ws : wsList){
             if(!mainWiese.contains(ws)){
                 Wiese currentWiese = ws.getWiese();
@@ -443,10 +481,14 @@ public class Landschaftskarte {
             }
         }
         mainWiese.isBesetzt();
-
-//        System.out.println("game.Wiese: "+mainWiese.getAnzahlWiesenstuecke());
     }
 
+    /**
+     * Verbindet alle Stadteile / Städte miteinander
+     * Die kleine Städte werden mit den Großen verbunden
+     * @param sdtList
+     * @param himmelsrichtungT
+     */
     private void connectStaedte(ArrayList<Stadtteil> sdtList, HimmelsrichtungT himmelsrichtungT){
         Stadt mainStadt = new Stadt();
         for(Stadtteil sdt : sdtList){
@@ -462,10 +504,13 @@ public class Landschaftskarte {
             }
         }
         mainStadt.isBesetzt();
-
-//        System.out.println("Staedte: "+mainStadt.getAnzahlStadtteile());
     }
 
+    /**
+     * Verbindet alle Straßenabschnitte / Straßen miteinander
+     * Die kleine Straßen werden mit den Großen verbunden
+     * @param strList
+     */
     private void connectStrassen(ArrayList<Strassenabschnitt> strList){
         Strasse mainStrasse = new Strasse();
         for(Strassenabschnitt str : strList){
@@ -484,7 +529,6 @@ public class Landschaftskarte {
             }
         }
         mainStrasse.isBesetzt();
-//        System.out.println("game.Strasse: "+ mainStrasse.getAnzahlStrassenabschnitte());
     }
 
     @Override
@@ -492,6 +536,11 @@ public class Landschaftskarte {
         return super.toString() + " Typ "+name.toUpperCase();
     }
 
+    /**
+     * Rotiert die L'Karte und alle sine L'Teile
+     * @param direction
+     * @param cout
+     */
     public void rotate(boolean direction, int cout){
         for (int i = 0; i<cout;i++) {
             if(strassenabschnitte != null) {
@@ -518,6 +567,9 @@ public class Landschaftskarte {
         }
     }
 
+    /**
+     * Gibt die Infos zu der Karte aus
+     */
     public void getInformation(){
         System.out.println("--INFO--");
         System.out.println(this);
@@ -551,11 +603,20 @@ public class Landschaftskarte {
         System.out.println("--END--");
     }
 
+    /**
+     * Öffnet eine Dialog um den Gefolgsmann zu setzen und setzt dem Gefolgsmann seine Position, Ausrichtung, Rolle
+     * und Gebiet
+     * @param gefolgsmann
+     */
     public void setGefolgsmann(Gefolgsmann gefolgsmann){
         Landschaftsteil output = null;
         ArrayList<String> choices = new ArrayList<>();
         HashMap<String, Landschaftsteil> auswahl = new HashMap<>();
         boolean isKloster =false;
+        /**
+         * Sammeln der möglichen Positionen zur Plazierung
+         * Besetzte Gebiete werden nicht angezeigt
+         */
         if(stadtteile != null){
             for(Stadtteil sdt : stadtteile){
                 if (!sdt.getStadt().isBesetzt()) {
@@ -585,16 +646,21 @@ public class Landschaftskarte {
             auswahl.put(kloster.toString(),kloster);
         }
         if(choices.size() == 0) return;
+        /**
+         * Öffnen des Dialogs
+         */
         ChoiceDialog<String> dialog = new ChoiceDialog<>(choices.get(0),choices);
         dialog.setTitle("Gebiet festlegen");
         dialog.setHeaderText("Gebiet zum Plazieren wählen:");
 
         Optional<String> result = dialog.showAndWait();
         if(result.isPresent()){
-//            auswahl.get(result.get()).setBesetzer(gefolgsmann);
             output = auswahl.get(result.get());
         }
 
+        /**
+         * Plazieren des Gefolgsmanns
+         */
         HimmelsrichtungT himmelsrichtungT = HimmelsrichtungT.STOP;
         HalbKantenT[] offeneHalbKanten = null;
         if(output != null && output.getClass().equals(Strassenabschnitt.class)){
@@ -620,12 +686,20 @@ public class Landschaftskarte {
             kloster.setBesetzer(gefolgsmann);
             kloster.checkAbgeschlossen();
         }
-        //weitere
+        /**
+         * Setzen der Anzeige Position des Gefolgsmanns
+         */
         double gfX = 0, gfY = 0;
         if(isKloster){
+            /**
+             * Für ein Kloster
+             */
             gfX = (1/2d)*83d-25d/2d;
             gfY = (1/2d)*83d-24d/2d;
         }else if(himmelsrichtungT != HimmelsrichtungT.STOP){
+            /**
+             * für Strassen und Städte
+             */
             switch (himmelsrichtungT){
                 case NORD:
                     gfX = (1/2d)*83d-25d/2d;
@@ -646,6 +720,9 @@ public class Landschaftskarte {
             }
 
         }else if(offeneHalbKanten != null){
+            /**
+             * Für wiesen
+             */
             //TODO Position anpassen, ist bei Ecken ok aber bei R,S,Q schlecht
 //            if(offeneHalbKanten.length == 1){
                 switch (offeneHalbKanten[0]){
@@ -733,6 +810,9 @@ public class Landschaftskarte {
         return name;
     }
 
+    /**
+     * Legt das Bild der Karte fest
+     */
     private void init(){
         switch (name){
             case "A":

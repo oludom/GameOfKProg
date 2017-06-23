@@ -10,10 +10,8 @@ import java.util.Observer;
 /**
  * 16.05.2017
  *
- * * @author SWirries
- *         <p>
- *         This code is
- *         documentation enough
+ * @author SWirries MHeiß
+ *
  */
 
 /**

@@ -4,7 +4,8 @@
 package siebenspaltenprime;
 
 /**
- * @author SWirries
+ * @author SWirries MHeiß
+ *
  * Ereugt Primezahlen für die Siebenspaltenprimezahl
  */
 public class Primer extends Thread{
@@ -50,11 +51,7 @@ public class Primer extends Thread{
 		}
 		if(siebenSpaltenPrimezahl != null){
 			siebenSpaltenPrimezahl.addPrime(tablePos+p);
-		}else {
-
 		}
-
-		
 	}
 
 	/**
@@ -62,7 +59,6 @@ public class Primer extends Thread{
 	 */
 	public void run(){
 		print();
-
 		while (true) { // Endlos-Schleife
 			int n = receive(); // Lese-Versuch
 			if (n == 0) {// wenn n=0: Ende

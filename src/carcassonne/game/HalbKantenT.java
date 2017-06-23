@@ -3,7 +3,9 @@ package carcassonne.game;
 /**
  * 07.05.2017
  *
- * @author SWirries
+ * @author MHeiß SWirries
+ *
+ * Positionen/Ausrichtung der Wiesen
  */
 public enum HalbKantenT {
     NordWest,
@@ -15,12 +17,20 @@ public enum HalbKantenT {
     WestSued,
     WestNord;
 
+    /**
+     * Rotation mit dem Uhrzeigersinn
+     * @return
+     */
     public HalbKantenT next(){
         HalbKantenT halbKantenT = this;
         halbKantenT = HalbKantenT.values()[(halbKantenT.ordinal() +2)%8];
         return halbKantenT;
     }
 
+    /**
+     * Rotation gegen den Uhrzeigersinn
+     * @return
+     */
     public HalbKantenT prev(){
         HalbKantenT halbKantenT = this;
         if(halbKantenT == NordWest) halbKantenT = HalbKantenT.values()[6];
